@@ -71,3 +71,19 @@ body {
 
 /* ─── Clip overflow for intro ────────────────────────────────── */
 .overflow-clip { overflow: hidden; }
+
+/* ─── Responsive helpers ─────────────────────────────────────── */
+.lg-show { display: none !important; }
+@media (min-width: 1024px) { .lg-show { display: flex !important; justify-content: center; align-items: center; } }
+
+/* ─── M.O.B hero glow animations ─────────────────────────────── */
+@keyframes mob-fire {
+  0%,100% { filter: drop-shadow(0 0 18px rgba(255,100,0,0.45)) drop-shadow(0 0 6px rgba(255,176,0,0.3)); }
+  50%      { filter: drop-shadow(0 0 40px rgba(255,80,0,0.75)) drop-shadow(0 0 14px rgba(255,200,0,0.5)); }
+}
+@keyframes mob-letter-float {
+  0%,100% { transform: translateY(0px); }
+  50%     { transform: translateY(-6px); }
+}
+.mob-fire  { animation: mob-fire 2.8s ease-in-out infinite; }
+.mob-float { animation: mob-letter-float 3.5s ease-in-out infinite; }

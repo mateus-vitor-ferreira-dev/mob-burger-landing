@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -160,7 +159,7 @@ export function Hero({ ready }: HeroProps) {
           </p>
 
           {/* Buttons */}
-          <div ref={btnsRef} className="flex flex-wrap gap-3 mt-8">
+          <div ref={btnsRef} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginTop: '2rem' }}>
             <a
               href="#pedido"
               style={{
@@ -214,61 +213,87 @@ export function Hero({ ready }: HeroProps) {
           </div>
         </div>
 
-        {/* Right — stats badge */}
-        <div className="hidden lg:flex justify-center items-center">
+        {/* Right — M.O.B animated display */}
+        <div className="lg-show" ref={cardRef}>
           <div
-            ref={cardRef}
             style={{
               background: 'var(--mob-card)',
               border: '1px solid var(--mob-border)',
-              borderRadius: '24px',
-              padding: '2.5rem',
+              borderRadius: '28px',
+              padding: '2.5rem 2rem',
               width: '100%',
               maxWidth: '420px',
+              textAlign: 'center',
+              position: 'relative',
+              overflow: 'hidden',
             }}
           >
-            {/* Logo */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
-              <Image
-                src="/mob-logo.png"
-                alt="M.O.B Burger"
-                width={200}
-                height={200}
-                style={{
-                  width: '180px',
-                  height: 'auto',
-                  filter: 'drop-shadow(0 0 30px rgba(255,90,0,0.45))',
-                }}
-              />
+            {/* Ambient fire glow inside card */}
+            <div style={{
+              position: 'absolute', inset: 0, pointerEvents: 'none',
+              background: 'radial-gradient(ellipse 80% 60% at 50% 80%, rgba(255,80,0,0.12) 0%, transparent 70%)',
+            }} />
+
+            {/* M.O.B animated letters */}
+            <div
+              className="mob-fire"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(4.5rem, 9vw, 8.5rem)',
+                letterSpacing: '0.06em',
+                lineHeight: 1,
+                background: 'linear-gradient(135deg, #FFD060 0%, #FF6200 55%, #CC2800 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                position: 'relative',
+                zIndex: 1,
+                marginBottom: '0.25rem',
+              }}
+            >
+              M.O.B
             </div>
 
-            <div className="grid grid-cols-3 gap-4 text-center">
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.65rem',
+              letterSpacing: '0.3em',
+              color: 'var(--mob-muted)',
+              textTransform: 'uppercase',
+              marginBottom: '2rem',
+              position: 'relative',
+              zIndex: 1,
+            }}>
+              BURGER · LAVRAS · MG
+            </p>
+
+            {/* Stats */}
+            <div style={{
+              display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '0.5rem', position: 'relative', zIndex: 1,
+            }}>
               {[
                 { num: '9+',    label: 'opções' },
                 { num: '100%', label: 'artesanal' },
                 { num: '30min', label: 'entrega' },
               ].map(({ num, label }) => (
-                <div key={label}>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: '2.2rem',
-                      color: 'var(--mob-fire)',
-                      lineHeight: 1,
-                    }}
-                  >
+                <div key={label} style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  borderRadius: '12px', padding: '0.75rem 0.5rem',
+                }}>
+                  <p style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)',
+                    color: 'var(--mob-fire)', lineHeight: 1,
+                  }}>
                     {num}
                   </p>
-                  <p
-                    style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '0.7rem',
-                      color: 'var(--mob-muted)',
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      marginTop: '0.25rem',
-                    }}
-                  >
+                  <p style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '0.62rem', color: 'var(--mob-muted)',
+                    letterSpacing: '0.1em', textTransform: 'uppercase',
+                    marginTop: '0.2rem',
+                  }}>
                     {label}
                   </p>
                 </div>
@@ -281,7 +306,7 @@ export function Hero({ ready }: HeroProps) {
       {/* Scroll indicator */}
       <div
         ref={scrollRef}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        style={{ position: 'absolute', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}
       >
         <p
           style={{
