@@ -76,6 +76,43 @@ body {
 .lg-show { display: none !important; }
 @media (min-width: 1024px) { .lg-show { display: flex !important; justify-content: center; align-items: center; } }
 
+/* ─── Carrossel mobile — scroll snap nativo ──────────────────── */
+@media (max-width: 1023px) {
+  #cardápio {
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  #cardápio::-webkit-scrollbar { display: none; }
+
+  /* track: sem transform do GSAP */
+  #cardápio > div {
+    will-change: auto !important;
+    transform: none !important;
+  }
+
+  /* cards: 85vw para mostrar peek do próximo */
+  .burger-card {
+    min-width: 85vw !important;
+    height: 80svh !important;
+    scroll-snap-align: start;
+  }
+
+  /* title card menor no mobile */
+  .carousel-title-card {
+    min-width: 80vw !important;
+    scroll-snap-align: start;
+  }
+
+  /* section label combos */
+  .carousel-section-label {
+    min-width: 50vw !important;
+    scroll-snap-align: start;
+  }
+}
+
 /* ─── M.O.B hero glow animations ─────────────────────────────── */
 @keyframes mob-fire {
   0%,100% { filter: drop-shadow(0 0 18px rgba(255,100,0,0.45)) drop-shadow(0 0 6px rgba(255,176,0,0.3)); }

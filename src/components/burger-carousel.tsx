@@ -218,7 +218,7 @@ function Card({
 /* ─── Separator label ────────────────────────────────────────── */
 function SectionLabel({ label }: { label: string }) {
   return (
-    <div style={{
+    <div className="carousel-section-label" style={{
       minWidth: 'clamp(120px, 12vw, 180px)',
       height: '100vh',
       display: 'flex', flexShrink: 0,
@@ -248,6 +248,7 @@ export function BurgerCarousel() {
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return
+    if (window.innerWidth < 1024) return  // mobile usa scroll nativo (CSS snap)
 
     const ctx = gsap.context(() => {
       const track   = trackRef.current
@@ -286,7 +287,7 @@ export function BurgerCarousel() {
         <div ref={trackRef} style={{ display: 'flex', alignItems: 'stretch', willChange: 'transform' }}>
 
           {/* Title card */}
-          <div ref={titleRef} style={{
+          <div ref={titleRef} className="carousel-title-card" style={{
             minWidth: 'clamp(280px, 28vw, 420px)',
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
             padding: 'clamp(2rem, 5vw, 5rem) clamp(2rem, 6vw, 6rem)',
@@ -312,7 +313,7 @@ export function BurgerCarousel() {
               fontFamily: 'var(--font-body)', fontSize: '0.82rem',
               color: 'var(--mob-muted)', marginTop: '1.5rem', lineHeight: 1.6,
             }}>
-              Toque em qualquer burger<br />para ver os ingredientes ↗
+              Deslize para explorar ↗
             </p>
           </div>
 
