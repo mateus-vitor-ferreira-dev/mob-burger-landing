@@ -4,97 +4,87 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { BurgerModal, type BurgerDetail } from './burger-modal'
 
 gsap.registerPlugin(ScrollTrigger)
 
 /* ─── Menu data ──────────────────────────────────────────────── */
-const BURGERS = [
+const BURGERS: (BurgerDetail & { id: number; image: string })[] = [
   {
     id: 1, name: 'MC Simples', tag: 'CLÁSSICO',
-    desc: 'Pão brioche · maionese · 2x mussarela · 110g de hambúrguer',
-    bg: ['#3B1F05', '#1C0C02'],
-    accent: '#FF8C2A',
+    ingredients: ['Pão Brioche', 'Maionese artesanal', '2 fatias de queijo mussarela', '110g de hambúrguer bovino'],
+    bg: ['#3B1F05', '#1C0C02'], accent: '#FF8C2A',
     image: '/burgers/mc-simples.jpg',
   },
   {
     id: 2, name: 'X Bacon', tag: '🔥 MAIS PEDIDO',
-    desc: 'Pão brioche · 2 tiras de bacon · 110g de hambúrguer · 2x cheddar',
-    bg: ['#3B0E05', '#1C0502'],
-    accent: '#FF4500',
+    ingredients: ['Pão Brioche', '2 tiras de bacon crocante', '110g de hambúrguer bovino', '2 fatias de cheddar'],
+    bg: ['#3B0E05', '#1C0502'], accent: '#FF4500',
     image: '/burgers/x-bacon.jpg',
   },
   {
     id: 3, name: 'X Bacon Egg', tag: 'ESPECIAL',
-    desc: 'Pão brioche · 2 bacons · 110g de hambúrguer · 2x cheddar · ovo caipira',
-    bg: ['#38280A', '#1A1203'],
-    accent: '#FFB020',
+    ingredients: ['Pão Brioche', '2 tiras de bacon crocante', '110g de hambúrguer bovino', '2 fatias de cheddar', 'Ovo caipira'],
+    bg: ['#38280A', '#1A1203'], accent: '#FFB020',
     image: '/burgers/x-bacon-egg.jpg',
   },
   {
     id: 4, name: 'Duplo BBQ', tag: 'PREMIUM',
-    desc: 'Pão brioche · molho BBQ · cebola caramelizada · 2 bacons · cheddar duplo · 220g',
-    bg: ['#280F02', '#0F0601'],
-    accent: '#CC3800',
+    ingredients: ['Pão Brioche', 'Molho BBQ defumado', 'Cebola roxa caramelizada', '2 tiras de bacon', 'Queijo cheddar', '110g de hambúrguer bovino', 'Queijo cheddar', '110g de hambúrguer bovino'],
+    bg: ['#280F02', '#0F0601'], accent: '#CC3800',
     image: '/burgers/duplo-bbq.jpg',
   },
   {
     id: 5, name: 'MC Salad', tag: 'LEVE',
-    desc: 'Pão brioche · molho especial · queijo · alface · tomate · cebola · 110g',
-    bg: ['#0E2808', '#060F03'],
-    accent: '#4CAF50',
+    ingredients: ['Pão Brioche', 'Molho especial da casa', 'Queijo mussarela', 'Alface americana', 'Tomate fresco', 'Cebola', '110g de hambúrguer bovino'],
+    bg: ['#0E2808', '#060F03'], accent: '#4CAF50',
     image: '/burgers/mc-salad.jpg',
   },
   {
     id: 6, name: 'Frango Simples', tag: 'FRANGO',
-    desc: 'Pão brioche · 2x mussarela · filé de frango grelhado',
-    bg: ['#2A2008', '#120E03'],
-    accent: '#F0A020',
+    ingredients: ['Pão Brioche', '2 fatias de queijo mussarela', 'Filé de frango grelhado'],
+    bg: ['#2A2008', '#120E03'], accent: '#F0A020',
     image: '/burgers/frango-simples.jpg',
   },
   {
     id: 7, name: 'Frango Bacon', tag: 'FRANGO',
-    desc: 'Pão brioche · cheddar · alface · tomate · cebola · frango grelhado com bacon',
-    bg: ['#2A1205', '#120802'],
-    accent: '#E05010',
+    ingredients: ['Pão Brioche', '2 fatias de queijo cheddar', 'Alface americana', 'Tomate fresco', 'Cebola', 'Filé de frango grelhado', 'Bacon crocante'],
+    bg: ['#2A1205', '#120802'], accent: '#E05010',
     image: '/burgers/frango-bacon.jpg',
   },
   {
     id: 8, name: 'Frango Empanado', tag: '🍗 CROCANTE',
-    desc: 'Pão brioche · filé empanado e frito · queijo · alface · tomate · molho da casa',
-    bg: ['#1E1600', '#0E0A00'],
-    accent: '#D4900A',
+    ingredients: ['Pão Brioche', 'Filé de frango empanado e frito', 'Queijo mussarela ou cheddar', 'Alface americana', 'Tomate fresco', 'Molho da casa'],
+    bg: ['#1E1600', '#0E0A00'], accent: '#D4900A',
     image: '/burgers/frango-empanado.jpg',
   },
 ]
 
-const COMBOS = [
+const COMBOS: (BurgerDetail & { id: string })[] = [
   {
     id: 'c1', name: 'Combo Bacon', tag: 'COMBO',
-    desc: 'X Bacon + batata P + refri 200ml',
-    bg: ['#2A0E05', '#110502'],
-    accent: '#FF4500',
+    ingredients: ['X Bacon', 'Batata frita pequena', 'Refri 200ml'],
+    bg: ['#2A0E05', '#110502'], accent: '#FF4500',
   },
   {
     id: 'c2', name: 'Combo Frango', tag: 'COMBO',
-    desc: 'Frango Empanado + batata P + brownie',
-    bg: ['#1E1600', '#0E0A00'],
-    accent: '#D4900A',
+    ingredients: ['Frango Empanado', 'Batata frita pequena', 'Brownie'],
+    bg: ['#1E1600', '#0E0A00'], accent: '#D4900A',
   },
   {
     id: 'c3', name: 'Par Perfeito', tag: '💑 DUO',
-    desc: '2x Salada + batata M + 2 Coca-Cola 200ml',
-    bg: ['#0A1A24', '#030A10'],
-    accent: '#2196F3',
+    ingredients: ['2x MC Salad', 'Batata frita média', '2x Coca-Cola 200ml'],
+    bg: ['#0A1A24', '#030A10'], accent: '#2196F3',
   },
 ]
 
-/* ─── Card component ─────────────────────────────────────────── */
+/* ─── Card ───────────────────────────────────────────────────── */
 function Card({
-  name, tag, desc, bg, accent, image, isCombo = false,
+  burger,
+  onOpen,
 }: {
-  name: string; tag: string; desc: string;
-  bg: [string, string]; accent: string;
-  image?: string; isCombo?: boolean;
+  burger: BurgerDetail & { image?: string }
+  onOpen: (b: BurgerDetail) => void
 }) {
   const [imgFailed, setImgFailed] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
@@ -108,6 +98,7 @@ function Card({
       className="burger-card"
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
+      onClick={() => onOpen(burger)}
       style={{
         minWidth: 'clamp(260px, 25vw, 340px)',
         height: '100vh',
@@ -121,111 +112,91 @@ function Card({
     >
       {/* Visual area */}
       <div style={{
-        flex: 1,
-        position: 'relative',
-        overflow: 'hidden',
-        background: `linear-gradient(160deg, ${bg[0]} 0%, ${bg[1]} 100%)`,
+        flex: 1, position: 'relative', overflow: 'hidden',
+        background: `linear-gradient(160deg, ${burger.bg[0]} 0%, ${burger.bg[1]} 100%)`,
       }}>
         <div className="c-inner" style={{ position: 'absolute', inset: 0, transformOrigin: 'center' }}>
-          {/* Real photo (when available) */}
-          {image && !imgFailed && (
+          {burger.image && !imgFailed && (
             <Image
-              src={image} alt={name} fill sizes="340px"
+              src={burger.image} alt={burger.name} fill sizes="340px"
               style={{ objectFit: 'cover', objectPosition: 'center' }}
               unoptimized onError={() => setImgFailed(true)}
             />
           )}
-
-          {/* Always-present gradient — visible when no photo or as base layer */}
-          {(imgFailed || !image) && (
+          {(imgFailed || !burger.image) && (
             <>
-              {/* Radial glow spot */}
               <div style={{
-                position: 'absolute',
-                width: '70%', height: '70%',
-                borderRadius: '50%',
-                top: '15%', left: '15%',
-                background: `radial-gradient(circle, ${accent}30 0%, transparent 70%)`,
+                position: 'absolute', width: '70%', height: '70%',
+                borderRadius: '50%', top: '15%', left: '15%',
+                background: `radial-gradient(circle, ${burger.accent}30 0%, transparent 70%)`,
                 filter: 'blur(28px)',
               }} />
-              {/* Diagonal light streak */}
               <div style={{
                 position: 'absolute', inset: 0,
-                background: `linear-gradient(125deg, ${accent}12 0%, transparent 50%, rgba(0,0,0,0.3) 100%)`,
+                background: `linear-gradient(125deg, ${burger.accent}12 0%, transparent 50%, rgba(0,0,0,0.3) 100%)`,
               }} />
-              {/* Icon */}
               <div style={{
                 position: 'absolute', inset: 0,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <span style={{
-                  fontSize: 'clamp(4.5rem, 7vw, 7rem)',
-                  lineHeight: 1,
-                  filter: `drop-shadow(0 0 24px ${accent}80)`,
-                  opacity: 0.9,
-                }}>
-                  {isCombo ? '🍟' : name.includes('Frango') ? '🍗' : '🍔'}
+                <span style={{ fontSize: 'clamp(4.5rem, 7vw, 7rem)', lineHeight: 1,
+                  filter: `drop-shadow(0 0 24px ${burger.accent}80)`, opacity: 0.9 }}>
+                  {burger.name.includes('Frango') ? '🍗' : burger.tag.includes('COMBO') ? '🍟' : '🍔'}
                 </span>
               </div>
             </>
           )}
         </div>
 
-        {/* Gradient fade to info panel */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 2,
           background: 'linear-gradient(to bottom, transparent 40%, rgba(8,7,11,0.9) 100%)',
           pointerEvents: 'none',
         }} />
-
-        {/* Accent line at top */}
-        <div style={{
-          position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
-          background: accent, zIndex: 3, opacity: 0.85,
-        }} />
-
-        {/* Tag */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: burger.accent, zIndex: 3, opacity: 0.85 }} />
         <div style={{ position: 'absolute', top: '1rem', left: '1.25rem', zIndex: 4 }}>
           <span style={{
             fontFamily: 'var(--font-body)', fontSize: '0.58rem',
             letterSpacing: '0.18em', textTransform: 'uppercase',
-            background: accent, color: '#fff',
+            background: burger.accent, color: '#fff',
             padding: '0.22rem 0.65rem', borderRadius: '9999px',
           }}>
-            {tag}
+            {burger.tag}
           </span>
+        </div>
+
+        {/* Click hint */}
+        <div style={{
+          position: 'absolute', bottom: '4.5rem', right: '1.25rem', zIndex: 4,
+          fontFamily: 'var(--font-body)', fontSize: '0.58rem',
+          letterSpacing: '0.12em', color: 'rgba(255,255,255,0.45)',
+          textTransform: 'uppercase',
+        }}>
+          Ver ingredientes ↑
         </div>
       </div>
 
-      {/* Info panel */}
+      {/* Info */}
       <div style={{
         padding: '1.1rem 1.4rem 1.6rem',
         background: 'var(--mob-card)',
-        borderTop: `2px solid ${accent}50`,
+        borderTop: `2px solid ${burger.accent}50`,
         flexShrink: 0,
       }}>
         <h3 style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
           color: 'var(--mob-text)', letterSpacing: '0.02em',
-          lineHeight: 1, marginBottom: '0.45rem',
+          lineHeight: 1, marginBottom: '0.35rem',
         }}>
-          {name}
+          {burger.name}
         </h3>
         <p style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.72rem',
-          color: 'var(--mob-muted)', lineHeight: 1.5,
-          marginBottom: '0.9rem',
+          fontFamily: 'var(--font-body)', fontSize: '0.7rem',
+          color: 'var(--mob-muted)',
         }}>
-          {desc}
+          {burger.ingredients.length} ingredientes · toque para ver
         </p>
-        <a href="#pedido" style={{
-          fontFamily: 'var(--font-display)', fontSize: '0.9rem',
-          letterSpacing: '0.06em', color: accent,
-          display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
-        }}>
-          Pedir agora →
-        </a>
       </div>
     </div>
   )
@@ -237,20 +208,16 @@ function SectionLabel({ label }: { label: string }) {
     <div style={{
       minWidth: 'clamp(120px, 12vw, 180px)',
       height: '100vh',
-      display: 'flex',
-      flexShrink: 0,
-      alignItems: 'center',
-      justifyContent: 'center',
+      display: 'flex', flexShrink: 0,
+      alignItems: 'center', justifyContent: 'center',
       borderRight: '1px solid var(--mob-border)',
       background: 'var(--mob-black)',
     }}>
       <p style={{
         fontFamily: 'var(--font-display)',
         fontSize: 'clamp(1rem, 2vw, 1.4rem)',
-        color: 'var(--mob-fire)',
-        letterSpacing: '0.25em',
-        writingMode: 'vertical-rl',
-        textOrientation: 'mixed',
+        color: 'var(--mob-fire)', letterSpacing: '0.25em',
+        writingMode: 'vertical-rl', textOrientation: 'mixed',
         transform: 'rotate(180deg)',
       }}>
         {label}
@@ -259,11 +226,12 @@ function SectionLabel({ label }: { label: string }) {
   )
 }
 
-/* ─── Main component ─────────────────────────────────────────── */
+/* ─── Main carousel ──────────────────────────────────────────── */
 export function BurgerCarousel() {
   const sectionRef = useRef<HTMLElement>(null)
   const trackRef   = useRef<HTMLDivElement>(null)
   const titleRef   = useRef<HTMLDivElement>(null)
+  const [selected, setSelected] = useState<BurgerDetail | null>(null)
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return
@@ -285,8 +253,7 @@ export function BurgerCarousel() {
         ease: 'none',
         scrollTrigger: {
           trigger: section,
-          pin: true,
-          scrub: 0.8,
+          pin: true, scrub: 0.8,
           invalidateOnRefresh: true,
           end: () => '+=' + getDistance(),
         },
@@ -297,108 +264,110 @@ export function BurgerCarousel() {
   }, [])
 
   return (
-    <section
-      ref={sectionRef}
-      id="cardápio"
-      style={{ background: 'var(--mob-surface)', overflow: 'hidden' }}
-    >
-      <div ref={trackRef} style={{ display: 'flex', alignItems: 'stretch', willChange: 'transform' }}>
+    <>
+      <section
+        ref={sectionRef}
+        id="cardápio"
+        style={{ background: 'var(--mob-surface)', overflow: 'hidden' }}
+      >
+        <div ref={trackRef} style={{ display: 'flex', alignItems: 'stretch', willChange: 'transform' }}>
 
-        {/* Title card */}
-        <div ref={titleRef} style={{
-          minWidth: 'clamp(280px, 28vw, 420px)',
-          display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          padding: 'clamp(2rem, 5vw, 5rem) clamp(2rem, 6vw, 6rem)',
-          borderRight: '1px solid var(--mob-border)', flexShrink: 0,
-        }}>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: '0.7rem',
-            letterSpacing: '0.22em', color: 'var(--mob-fire)',
-            textTransform: 'uppercase', marginBottom: '1rem',
+          {/* Title card */}
+          <div ref={titleRef} style={{
+            minWidth: 'clamp(280px, 28vw, 420px)',
+            display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            padding: 'clamp(2rem, 5vw, 5rem) clamp(2rem, 6vw, 6rem)',
+            borderRight: '1px solid var(--mob-border)', flexShrink: 0,
           }}>
-            Nosso Cardápio
-          </p>
-          <h2 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(3.5rem, 7vw, 7rem)',
-            color: 'var(--mob-text)', lineHeight: 0.9, letterSpacing: '-0.01em',
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: '0.7rem',
+              letterSpacing: '0.22em', color: 'var(--mob-fire)',
+              textTransform: 'uppercase', marginBottom: '1rem',
+            }}>
+              Nosso Cardápio
+            </p>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(3.5rem, 7vw, 7rem)',
+              color: 'var(--mob-text)', lineHeight: 0.9, letterSpacing: '-0.01em',
+            }}>
+              FEITO<br />
+              <span style={{ color: 'var(--mob-fire)' }}>PRA</span><br />
+              VOCÊ
+            </h2>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: '0.82rem',
+              color: 'var(--mob-muted)', marginTop: '1.5rem', lineHeight: 1.6,
+            }}>
+              Toque em qualquer burger<br />para ver os ingredientes ↗
+            </p>
+          </div>
+
+          {/* Burger cards */}
+          {BURGERS.map((b) => (
+            <Card key={b.id} burger={b} onOpen={setSelected} />
+          ))}
+
+          {/* Combos separator + cards */}
+          <SectionLabel label="COMBOS" />
+          {COMBOS.map((c) => (
+            <Card key={c.id} burger={c} onOpen={setSelected} />
+          ))}
+
+          {/* End CTA */}
+          <div style={{
+            minWidth: 'clamp(300px, 32vw, 440px)',
+            height: '100vh',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0, padding: '3rem',
+            background: 'var(--mob-black)',
+            borderLeft: '1px solid var(--mob-border)',
+            textAlign: 'center',
           }}>
-            FEITO<br />
-            <span style={{ color: 'var(--mob-fire)' }}>PRA</span><br />
-            VOCÊ
-          </h2>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: '0.82rem',
-            color: 'var(--mob-muted)', marginTop: '1.5rem', lineHeight: 1.6,
-          }}>
-            Role para explorar<br />o cardápio completo ↗
-          </p>
+            <div style={{ fontSize: '4rem', marginBottom: '1.5rem',
+              filter: 'drop-shadow(0 0 20px rgba(255,69,0,0.4))' }}>🍔</div>
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: '0.65rem',
+              letterSpacing: '0.25em', color: 'var(--mob-fire)',
+              textTransform: 'uppercase', marginBottom: '1.25rem',
+            }}>
+              Pronto para pedir?
+            </p>
+            <h3 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(2.8rem, 5.5vw, 5rem)',
+              color: 'var(--mob-text)', lineHeight: 0.9,
+              letterSpacing: '-0.01em', marginBottom: '2rem',
+            }}>
+              ESCOLHEU?<br />
+              <span style={{ color: 'var(--mob-fire)' }}>AGORA<br />PEDE.</span>
+            </h3>
+            <a href="#pedido" style={{
+              fontFamily: 'var(--font-display)', fontSize: '1.1rem',
+              letterSpacing: '0.06em', background: 'var(--mob-fire)',
+              color: '#fff', padding: '0.85rem 2.2rem',
+              borderRadius: '9999px', display: 'inline-block',
+              transition: 'transform 0.2s, box-shadow 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.transform = 'scale(1.04)'
+              ;(e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(255,69,0,0.5)'
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLElement).style.transform = 'scale(1)'
+              ;(e.currentTarget as HTMLElement).style.boxShadow = 'none'
+            }}
+            >
+              Fazer Pedido
+            </a>
+          </div>
+
         </div>
+      </section>
 
-        {/* Burgers */}
-        {BURGERS.map((b) => (
-          <Card key={b.id} name={b.name} tag={b.tag} desc={b.desc}
-            bg={b.bg as [string,string]} accent={b.accent} image={b.image} />
-        ))}
-
-        {/* Combos section */}
-        <SectionLabel label="COMBOS" />
-
-        {COMBOS.map((c) => (
-          <Card key={c.id} name={c.name} tag={c.tag} desc={c.desc}
-            bg={c.bg as [string,string]} accent={c.accent} isCombo />
-        ))}
-
-        {/* End CTA card */}
-        <div style={{
-          minWidth: 'clamp(300px, 32vw, 440px)',
-          height: '100vh',
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0, padding: '3rem',
-          background: 'var(--mob-black)',
-          borderLeft: '1px solid var(--mob-border)',
-          textAlign: 'center',
-        }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1.5rem',
-            filter: 'drop-shadow(0 0 20px rgba(255,69,0,0.4))' }}>🍔</div>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: '0.65rem',
-            letterSpacing: '0.25em', color: 'var(--mob-fire)',
-            textTransform: 'uppercase', marginBottom: '1.25rem',
-          }}>
-            Pronto para pedir?
-          </p>
-          <h3 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2.8rem, 5.5vw, 5rem)',
-            color: 'var(--mob-text)', lineHeight: 0.9,
-            letterSpacing: '-0.01em', marginBottom: '2rem',
-          }}>
-            ESCOLHEU?<br />
-            <span style={{ color: 'var(--mob-fire)' }}>AGORA<br />PEDE.</span>
-          </h3>
-          <a href="#pedido" style={{
-            fontFamily: 'var(--font-display)', fontSize: '1.1rem',
-            letterSpacing: '0.06em', background: 'var(--mob-fire)',
-            color: '#fff', padding: '0.85rem 2.2rem',
-            borderRadius: '9999px', display: 'inline-block',
-            transition: 'transform 0.2s, box-shadow 0.2s',
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.transform = 'scale(1.04)'
-            ;(e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(255,69,0,0.5)'
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.transform = 'scale(1)'
-            ;(e.currentTarget as HTMLElement).style.boxShadow = 'none'
-          }}
-          >
-            Fazer Pedido
-          </a>
-        </div>
-
-      </div>
-    </section>
+      {/* Modal — fora da section para não ser afetado pelo pin do GSAP */}
+      <BurgerModal burger={selected} onClose={() => setSelected(null)} />
+    </>
   )
 }
