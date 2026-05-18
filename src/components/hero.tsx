@@ -117,7 +117,12 @@ export function Hero({ ready }: HeroProps) {
         Artesanal · Lavras/MG
       </p>
 
-      {/* ── BRAND NAME — the full hero ── */}
+      {/* ── BRAND NAME — fire gradient contínuo ── */}
+      {/*
+        background-clip:text não cascateia para filhos no CSS.
+        Solução: cada linha tem seu segmento do gradiente de chamas,
+        continuando de onde a anterior parou (simula uma chama única).
+      */}
       <h1
         style={{
           fontFamily: 'var(--font-display)',
@@ -128,26 +133,29 @@ export function Hero({ ready }: HeroProps) {
           marginBottom: 'clamp(2rem, 5vh, 4rem)',
         }}
       >
-        {/* MURILO — solid cream, biggest impact */}
+        {/* MURILO — ponta da chama: branco-amarelo → âmbar */}
         <div className="overflow-clip">
           <div
             ref={line1Ref}
             style={{
               fontSize: 'clamp(5.5rem, 21vw, 20rem)',
-              color: 'var(--mob-text)',
+              background: 'linear-gradient(to bottom, #FFFDE7 0%, #FFE082 25%, #FFCA28 55%, #FFB300 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
             MURILO
           </div>
         </div>
 
-        {/* ORIGINAL — fire gradient, medium */}
+        {/* ORIGINAL — corpo da chama: âmbar → laranja-fogo */}
         <div className="overflow-clip">
           <div
             ref={line2Ref}
             style={{
               fontSize: 'clamp(4rem, 16.5vw, 16rem)',
-              background: 'linear-gradient(95deg, #FFD060 0%, #FF5500 55%, #C82000 100%)',
+              background: 'linear-gradient(to bottom, #FFB300 0%, #FF8F00 30%, #FF6D00 65%, #F4511E 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -157,14 +165,16 @@ export function Hero({ ready }: HeroProps) {
           </div>
         </div>
 
-        {/* BURGER — outline ghost text */}
+        {/* BURGER — base da chama: laranja-vermelho → vermelho escuro */}
         <div className="overflow-clip">
           <div
             ref={line3Ref}
             style={{
               fontSize: 'clamp(5.5rem, 21vw, 20rem)',
-              color: 'transparent',
-              WebkitTextStroke: '2px rgba(242,236,227,0.28)',
+              background: 'linear-gradient(to bottom, #E64A19 0%, #C62828 45%, #B71C1C 75%, #7B1414 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
             BURGER
