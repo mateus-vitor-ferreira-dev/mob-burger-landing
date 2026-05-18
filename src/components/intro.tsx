@@ -98,14 +98,28 @@ export function Intro({ onComplete }: IntroProps) {
           ref={tagRef}
           style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 'clamp(0.7rem, 1.5vw, 1rem)',
+            fontSize: 'clamp(0.6rem, 1.2vw, 0.85rem)',
             color: 'var(--mob-muted)',
-            letterSpacing: '0.35em',
+            letterSpacing: '0.3em',
             textTransform: 'uppercase',
-            marginTop: '0.75rem',
+            marginTop: '0.9rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            justifyContent: 'center',
           }}
         >
-          Lavras · MG
+          <span style={{ color: 'var(--mob-fire)' }}>M</span>
+          <span style={{ opacity: 0.4 }}>·</span>
+          MURILO
+          <span style={{ opacity: 0.25, margin: '0 0.2rem' }}>|</span>
+          <span style={{ color: 'var(--mob-fire)' }}>O</span>
+          <span style={{ opacity: 0.4 }}>·</span>
+          ORIGINAL
+          <span style={{ opacity: 0.25, margin: '0 0.2rem' }}>|</span>
+          <span style={{ color: 'var(--mob-fire)' }}>B</span>
+          <span style={{ opacity: 0.4 }}>·</span>
+          BURGER
         </p>
       </div>
     </div>

@@ -27,6 +27,13 @@ export function Footer() {
               height={120}
               style={{ width: 'clamp(80px, 10vw, 120px)', height: 'auto', marginBottom: '0.75rem' }}
             />
+            <p style={{
+              fontFamily: 'var(--font-body)', fontSize: '0.62rem',
+              letterSpacing: '0.15em', color: 'var(--mob-fire)',
+              textTransform: 'uppercase', marginBottom: '0.4rem',
+            }}>
+              Murilo Original Burger
+            </p>
             <p
               style={{
                 fontFamily: 'var(--font-body)',

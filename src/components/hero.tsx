@@ -254,18 +254,46 @@ export function Hero({ ready }: HeroProps) {
               M.O.B
             </div>
 
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.65rem',
-              letterSpacing: '0.3em',
-              color: 'var(--mob-muted)',
-              textTransform: 'uppercase',
-              marginBottom: '2rem',
-              position: 'relative',
-              zIndex: 1,
+            {/* M · MURILO / O · ORIGINAL / B · BURGER */}
+            <div style={{
+              display: 'flex', flexDirection: 'column', gap: '0.2rem',
+              marginBottom: '1.75rem', position: 'relative', zIndex: 1,
             }}>
-              BURGER · LAVRAS · MG
-            </p>
+              {[
+                { letter: 'M', word: 'MURILO' },
+                { letter: 'O', word: 'ORIGINAL' },
+                { letter: 'B', word: 'BURGER' },
+              ].map(({ letter, word }) => (
+                <div key={letter} style={{
+                  display: 'flex', alignItems: 'center', gap: '0.6rem',
+                  justifyContent: 'center',
+                }}>
+                  <span style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '0.9rem',
+                    color: 'var(--mob-fire)',
+                    lineHeight: 1,
+                    minWidth: '0.9rem',
+                  }}>
+                    {letter}
+                  </span>
+                  <span style={{
+                    width: '1px', height: '10px',
+                    background: 'var(--mob-border)',
+                    flexShrink: 0,
+                  }} />
+                  <span style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.2em',
+                    color: 'var(--mob-muted)',
+                    textTransform: 'uppercase',
+                  }}>
+                    {word}
+                  </span>
+                </div>
+              ))}
+            </div>
 
             {/* Stats */}
             <div style={{
