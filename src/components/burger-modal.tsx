@@ -19,25 +19,60 @@ interface BurgerModalProps {
 }
 
 export function BurgerModal({ burger, onClose }: BurgerModalProps) {
-  const backdropRef = useRef<HTMLDivElement>(null)
-  const panelRef    = useRef<HTMLDivElement>(null)
-  const imgFailed   = useRef(false)
+  const backdropRef    = useRef<HTMLDivElement>(null)
+  const panelRef       = useRef<HTMLDivElement>(null)
+  const ingredientsRef = useRef<HTMLUListElement>(null)
+  const titleRef       = useRef<HTMLHeadingElement>(null)
+  const labelRef       = useRef<HTMLParagraphElement>(null)
+  const ctaRef         = useRef<HTMLAnchorElement>(null)
 
   /* ── Open animation ── */
   useEffect(() => {
     if (!burger) return
 
-    imgFailed.current = false
+    const items = ingredientsRef.current?.querySelectorAll('li') ?? []
 
     const tl = gsap.timeline()
+
+    // 1. backdrop fades in
     tl.fromTo(backdropRef.current,
       { opacity: 0 },
       { opacity: 1, duration: 0.3, ease: 'power2.out' },
     )
+    // 2. panel slides up
     tl.fromTo(panelRef.current,
       { y: '100%' },
       { y: '0%', duration: 0.45, ease: 'power3.out' },
       '<0.05',
+    )
+    // 3. title
+    tl.fromTo(titleRef.current,
+      { opacity: 0, x: -24 },
+      { opacity: 1, x: 0, duration: 0.35, ease: 'power2.out' },
+      '-=0.1',
+    )
+    // 4. label "Ingredientes"
+    tl.fromTo(labelRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.25 },
+      '-=0.1',
+    )
+    // 5. ingredients stagger
+    tl.fromTo(items,
+      { opacity: 0, x: -20 },
+      {
+        opacity: 1, x: 0,
+        stagger: 0.07,
+        duration: 0.35,
+        ease: 'power2.out',
+      },
+      '-=0.1',
+    )
+    // 6. CTA
+    tl.fromTo(ctaRef.current,
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' },
+      '-=0.1',
     )
   }, [burger])
 
@@ -48,7 +83,7 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
     return () => window.removeEventListener('keydown', onKey)
   })
 
-  /* ── Prevent body scroll when open ── */
+  /* ── Prevent body scroll ── */
   useEffect(() => {
     if (burger) document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = '' }
@@ -57,7 +92,7 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
   function handleClose() {
     const tl = gsap.timeline({ onComplete: onClose })
     tl.to(panelRef.current,    { y: '100%', duration: 0.38, ease: 'power3.in' })
-    tl.to(backdropRef.current, { opacity: 0, duration: 0.25, ease: 'power2.in' }, '<0.05')
+    tl.to(backdropRef.current, { opacity: 0, duration: 0.22, ease: 'power2.in' }, '<0.05')
   }
 
   if (!burger) return null
@@ -73,9 +108,9 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
         onClick={handleClose}
         style={{
           position: 'absolute', inset: 0,
-          background: 'rgba(4,3,6,0.82)',
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
+          background: 'rgba(4,3,6,0.85)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
           cursor: 'pointer',
         }}
       />
@@ -89,9 +124,11 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
           background: 'var(--mob-surface)',
           borderTop: `3px solid ${burger.accent}`,
           borderRadius: '24px 24px 0 0',
-          maxHeight: '88svh',
-          overflowY: 'auto',
+          maxHeight: '90svh',
+          overflow: 'hidden',
           transform: 'translateY(100%)',
+          display: 'flex',
+          flexDirection: 'column',
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -102,104 +139,165 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
           style={{
             position: 'absolute', top: '1rem', right: '1.25rem',
             width: '36px', height: '36px', borderRadius: '50%',
-            background: 'var(--mob-card)',
-            border: '1px solid var(--mob-border)',
-            color: 'var(--mob-muted)',
-            fontSize: '1.1rem', cursor: 'pointer',
+            background: 'rgba(0,0,0,0.5)',
+            border: '1px solid rgba(255,255,255,0.12)',
+            color: 'rgba(255,255,255,0.6)',
+            fontSize: '1rem', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            zIndex: 2, transition: 'color 0.2s',
+            zIndex: 10, transition: 'all 0.2s',
           }}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--mob-text)')}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--mob-muted)')}
+          onMouseEnter={(e) => {
+            const el = e.currentTarget as HTMLElement
+            el.style.color = '#fff'
+            el.style.background = 'rgba(255,255,255,0.1)'
+          }}
+          onMouseLeave={(e) => {
+            const el = e.currentTarget as HTMLElement
+            el.style.color = 'rgba(255,255,255,0.6)'
+            el.style.background = 'rgba(0,0,0,0.5)'
+          }}
         >
           ✕
         </button>
 
+        {/* Two-column layout */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0,1fr)',
-          gap: 0,
+          gridTemplateColumns: 'minmax(0, 45%) minmax(0, 55%)',
+          flex: 1,
+          overflow: 'hidden',
+          // Stack on small screens
+          ...(typeof window !== 'undefined' && window.innerWidth < 640
+            ? { gridTemplateColumns: '1fr', overflowY: 'auto' }
+            : {}),
         }}>
-          {/* Image strip */}
+
+          {/* LEFT — photo, full burger visible */}
           <div style={{
             position: 'relative',
-            height: 'clamp(180px, 30vw, 320px)',
-            background: `linear-gradient(160deg, ${burger.bg[0]} 0%, ${burger.bg[1]} 100%)`,
+            background: `linear-gradient(135deg, ${burger.bg[0]} 0%, ${burger.bg[1]} 100%)`,
             overflow: 'hidden',
-            flexShrink: 0,
+            minHeight: 'clamp(260px, 40vh, 560px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}>
-            {burger.image && (
-              <Image
-                src={burger.image}
-                alt={burger.name}
-                fill
-                sizes="100vw"
-                style={{ objectFit: 'cover', objectPosition: 'center' }}
-                unoptimized
-                onError={() => { imgFailed.current = true }}
-              />
-            )}
-            {/* Gradient overlay */}
+            {/* Ambient glow */}
             <div style={{
               position: 'absolute', inset: 0,
-              background: `linear-gradient(to bottom, transparent 30%, rgba(16,14,23,0.95) 100%)`,
+              background: `radial-gradient(ellipse at center, ${burger.accent}20 0%, transparent 70%)`,
+              pointerEvents: 'none',
             }} />
+
+            {burger.image ? (
+              <div style={{
+                position: 'relative',
+                width: '90%',
+                height: '80%',
+                maxHeight: '460px',
+              }}>
+                <Image
+                  src={burger.image}
+                  alt={burger.name}
+                  fill
+                  sizes="45vw"
+                  style={{
+                    objectFit: 'contain',       // ← mostra a foto inteira, sem corte
+                    objectPosition: 'center',
+                    filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.7))',
+                  }}
+                  unoptimized
+                />
+              </div>
+            ) : (
+              <span style={{
+                fontSize: 'clamp(5rem, 10vw, 10rem)',
+                filter: `drop-shadow(0 0 40px ${burger.accent}90)`,
+              }}>
+                {burger.name.includes('Frango') ? '🍗' : '🍔'}
+              </span>
+            )}
+
             {/* Tag */}
-            <div style={{ position: 'absolute', top: '1rem', left: '1.5rem' }}>
+            <div style={{ position: 'absolute', top: '1.25rem', left: '1.25rem', zIndex: 2 }}>
               <span style={{
                 fontFamily: 'var(--font-body)', fontSize: '0.6rem',
                 letterSpacing: '0.18em', textTransform: 'uppercase',
                 background: burger.accent, color: '#fff',
-                padding: '0.25rem 0.7rem', borderRadius: '9999px',
+                padding: '0.25rem 0.75rem', borderRadius: '9999px',
               }}>
                 {burger.tag}
               </span>
             </div>
-            {/* Name over image */}
-            <div style={{
-              position: 'absolute', bottom: '1.25rem', left: '1.5rem', right: '4rem',
-            }}>
-              <h2 style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-                color: '#fff', lineHeight: 0.95,
-                letterSpacing: '-0.01em',
-                textShadow: '0 2px 20px rgba(0,0,0,0.6)',
-              }}>
-                {burger.name}
-              </h2>
-            </div>
           </div>
 
-          {/* Content */}
-          <div style={{ padding: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
-            {/* Ingredients */}
-            <p style={{
-              fontFamily: 'var(--font-body)', fontSize: '0.65rem',
-              letterSpacing: '0.22em', color: burger.accent,
-              textTransform: 'uppercase', marginBottom: '1.25rem',
-            }}>
+          {/* RIGHT — ingredients */}
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'auto',
+            padding: 'clamp(1.5rem, 3vw, 2.5rem)',
+          }}>
+            {/* Name */}
+            <h2
+              ref={titleRef}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(2rem, 4vw, 3.2rem)',
+                color: '#fff', lineHeight: 0.92,
+                letterSpacing: '-0.01em',
+                marginBottom: '0.5rem',
+                opacity: 0,
+              }}
+            >
+              {burger.name}
+            </h2>
+
+            {/* Divider */}
+            <div style={{
+              width: '3rem', height: '3px',
+              background: burger.accent,
+              borderRadius: '2px',
+              marginBottom: '1.75rem',
+            }} />
+
+            {/* Label */}
+            <p
+              ref={labelRef}
+              style={{
+                fontFamily: 'var(--font-body)', fontSize: '0.62rem',
+                letterSpacing: '0.22em', color: burger.accent,
+                textTransform: 'uppercase', marginBottom: '1rem',
+                opacity: 0,
+              }}
+            >
               Ingredientes
             </p>
 
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, marginBottom: '2rem' }}>
+            {/* List */}
+            <ul
+              ref={ingredientsRef}
+              style={{ listStyle: 'none', padding: 0, margin: 0, flex: 1 }}
+            >
               {burger.ingredients.map((ing, i) => (
                 <li
                   key={i}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.75rem',
-                    padding: '0.65rem 0',
+                    gap: '0.85rem',
+                    padding: '0.7rem 0',
                     borderBottom: '1px solid var(--mob-border)',
                     fontFamily: 'var(--font-body)',
-                    fontSize: 'clamp(0.85rem, 1.5vw, 1rem)',
+                    fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
                     color: 'var(--mob-text)',
+                    opacity: 0,  // GSAP starts from 0
                   }}
                 >
                   <span style={{
-                    width: '6px', height: '6px', borderRadius: '50%',
+                    width: '7px', height: '7px', borderRadius: '50%',
                     background: burger.accent, flexShrink: 0,
+                    boxShadow: `0 0 6px ${burger.accent}80`,
                   }} />
                   {ing}
                 </li>
@@ -207,38 +305,42 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
             </ul>
 
             {/* CTA */}
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
-                letterSpacing: '0.06em',
-                background: burger.accent,
-                color: '#fff',
-                padding: '0.9rem 2rem',
-                borderRadius: '9999px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                width: '100%',
-                transition: 'opacity 0.2s, transform 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.opacity = '0.9'
-                el.style.transform = 'scale(1.02)'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.opacity = '1'
-                el.style.transform = 'scale(1)'
-              }}
-            >
-              Pedir {burger.name} no WhatsApp →
-            </a>
+            <div style={{ paddingTop: '1.75rem' }}>
+              <a
+                ref={ctaRef}
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(0.95rem, 1.8vw, 1.2rem)',
+                  letterSpacing: '0.06em',
+                  background: burger.accent,
+                  color: '#fff',
+                  padding: '0.9rem 1.5rem',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  width: '100%',
+                  opacity: 0,
+                  transition: 'opacity 0.2s, transform 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.opacity = '0.88'
+                  el.style.transform = 'scale(1.02)'
+                }}
+                onMouseLeave={(e) => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.opacity = '1'
+                  el.style.transform = 'scale(1)'
+                }}
+              >
+                Pedir {burger.name} no WhatsApp →
+              </a>
+            </div>
           </div>
         </div>
       </div>
