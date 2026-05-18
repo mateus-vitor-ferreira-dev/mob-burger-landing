@@ -11,49 +11,49 @@ gsap.registerPlugin(ScrollTrigger)
 /* ─── Menu data ──────────────────────────────────────────────── */
 const BURGERS: (BurgerDetail & { id: number; image: string })[] = [
   {
-    id: 1, name: 'MC Simples', tag: 'CLÁSSICO',
+    id: 1, name: 'MC Simples', tag: 'CLÁSSICO', price: 'R$ 22,90',
     ingredients: ['Pão Brioche', 'Maionese artesanal', '2 fatias de queijo mussarela', '110g de hambúrguer bovino'],
     bg: ['#3B1F05', '#1C0C02'], accent: '#FF8C2A',
     image: '/burgers/mc-simples.jpg',
   },
   {
-    id: 2, name: 'X Bacon', tag: '🔥 MAIS PEDIDO',
+    id: 2, name: 'X Bacon', tag: '🔥 MAIS PEDIDO', price: 'R$ 28,90',
     ingredients: ['Pão Brioche', '2 tiras de bacon crocante', '110g de hambúrguer bovino', '2 fatias de cheddar'],
     bg: ['#3B0E05', '#1C0502'], accent: '#FF4500',
     image: '/burgers/x-bacon.jpg',
   },
   {
-    id: 3, name: 'X Bacon Egg', tag: 'ESPECIAL',
+    id: 3, name: 'X Bacon Egg', tag: 'ESPECIAL', price: 'R$ 31,90',
     ingredients: ['Pão Brioche', '2 tiras de bacon crocante', '110g de hambúrguer bovino', '2 fatias de cheddar', 'Ovo caipira'],
     bg: ['#38280A', '#1A1203'], accent: '#FFB020',
     image: '/burgers/x-bacon-egg.jpg',
   },
   {
-    id: 4, name: 'Duplo BBQ', tag: 'PREMIUM',
+    id: 4, name: 'Duplo BBQ', tag: 'PREMIUM', price: 'R$ 39,90',
     ingredients: ['Pão Brioche', 'Molho BBQ defumado', 'Cebola roxa caramelizada', '2 tiras de bacon', 'Queijo cheddar', '110g de hambúrguer bovino', 'Queijo cheddar', '110g de hambúrguer bovino'],
     bg: ['#280F02', '#0F0601'], accent: '#CC3800',
     image: '/burgers/duplo-bbq.jpg',
   },
   {
-    id: 5, name: 'MC Salad', tag: 'LEVE',
+    id: 5, name: 'MC Salad', tag: 'LEVE', price: 'R$ 26,90',
     ingredients: ['Pão Brioche', 'Molho especial da casa', 'Queijo mussarela', 'Alface americana', 'Tomate fresco', 'Cebola', '110g de hambúrguer bovino'],
     bg: ['#0E2808', '#060F03'], accent: '#4CAF50',
     image: '/burgers/mc-salad.jpg',
   },
   {
-    id: 6, name: 'Frango Simples', tag: 'FRANGO',
+    id: 6, name: 'Frango Simples', tag: 'FRANGO', price: 'R$ 23,90',
     ingredients: ['Pão Brioche', '2 fatias de queijo mussarela', 'Filé de frango grelhado'],
     bg: ['#2A2008', '#120E03'], accent: '#F0A020',
     image: '/burgers/frango-simples.jpg',
   },
   {
-    id: 7, name: 'Frango Bacon', tag: 'FRANGO',
+    id: 7, name: 'Frango Bacon', tag: 'FRANGO', price: 'R$ 29,90',
     ingredients: ['Pão Brioche', '2 fatias de queijo cheddar', 'Alface americana', 'Tomate fresco', 'Cebola', 'Filé de frango grelhado', 'Bacon crocante'],
     bg: ['#2A1205', '#120802'], accent: '#E05010',
     image: '/burgers/frango-bacon.jpg',
   },
   {
-    id: 8, name: 'Frango Empanado', tag: '🍗 CROCANTE',
+    id: 8, name: 'Frango Empanado', tag: '🍗 CROCANTE', price: 'R$ 27,90',
     ingredients: ['Pão Brioche', 'Filé de frango empanado e frito', 'Queijo mussarela ou cheddar', 'Alface americana', 'Tomate fresco', 'Molho da casa'],
     bg: ['#1E1600', '#0E0A00'], accent: '#D4900A',
     image: '/burgers/frango-empanado.jpg',
@@ -62,17 +62,17 @@ const BURGERS: (BurgerDetail & { id: number; image: string })[] = [
 
 const COMBOS: (BurgerDetail & { id: string })[] = [
   {
-    id: 'c1', name: 'Combo Bacon', tag: 'COMBO',
+    id: 'c1', name: 'Combo Bacon', tag: 'COMBO', price: 'R$ 39,90',
     ingredients: ['X Bacon', 'Batata frita pequena', 'Refri 200ml'],
     bg: ['#2A0E05', '#110502'], accent: '#FF4500',
   },
   {
-    id: 'c2', name: 'Combo Frango', tag: 'COMBO',
+    id: 'c2', name: 'Combo Frango', tag: 'COMBO', price: 'R$ 37,90',
     ingredients: ['Frango Empanado', 'Batata frita pequena', 'Brownie'],
     bg: ['#1E1600', '#0E0A00'], accent: '#D4900A',
   },
   {
-    id: 'c3', name: 'Par Perfeito', tag: '💑 DUO',
+    id: 'c3', name: 'Par Perfeito', tag: '💑 DUO', price: 'R$ 59,90',
     ingredients: ['2x MC Salad', 'Batata frita média', '2x Coca-Cola 200ml'],
     bg: ['#0A1A24', '#030A10'], accent: '#2196F3',
   },
@@ -183,14 +183,27 @@ function Card({
         borderTop: `2px solid ${burger.accent}50`,
         flexShrink: 0,
       }}>
-        <h3 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
-          color: 'var(--mob-text)', letterSpacing: '0.02em',
-          lineHeight: 1, marginBottom: '0.35rem',
-        }}>
-          {burger.name}
-        </h3>
+        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.35rem' }}>
+          <h3 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
+            color: 'var(--mob-text)', letterSpacing: '0.02em',
+            lineHeight: 1,
+          }}>
+            {burger.name}
+          </h3>
+          {burger.price && (
+            <span style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.2rem, 1.8vw, 1.6rem)',
+              color: burger.accent,
+              lineHeight: 1,
+              flexShrink: 0,
+            }}>
+              {burger.price}
+            </span>
+          )}
+        </div>
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: '0.7rem',
           color: 'var(--mob-muted)',

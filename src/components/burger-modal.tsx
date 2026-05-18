@@ -10,6 +10,7 @@ export interface BurgerDetail {
   ingredients: string[]
   bg: [string, string]
   accent: string
+  price?: string
   image?: string
 }
 
@@ -252,6 +253,20 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
             >
               {burger.name}
             </h2>
+
+            {/* Price */}
+            {burger.price && (
+              <p style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(1.8rem, 3.5vw, 2.8rem)',
+                color: burger.accent,
+                lineHeight: 1,
+                marginBottom: '0.5rem',
+                letterSpacing: '0.02em',
+              }}>
+                {burger.price}
+              </p>
+            )}
 
             {/* Divider */}
             <div style={{
