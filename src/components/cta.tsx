@@ -32,10 +32,10 @@ export function CTA() {
         .from(subRef.current, { opacity: 0, y: 20, duration: 0.55, ease: 'power2.out' }, '-=0.3')
         .from(btnRef.current, { opacity: 0, y: 20, scale: 0.95, duration: 0.55, ease: 'power2.out' }, '-=0.3')
 
-      /* Glow pulse on button */
+      /* Glow pulse on button — sutil */
       gsap.to(btnRef.current, {
-        boxShadow: '0 0 50px rgba(255,69,0,0.65), 0 0 120px rgba(255,69,0,0.25)',
-        duration: 1.4,
+        boxShadow: '0 0 28px rgba(255,69,0,0.55)',
+        duration: 1.6,
         ease: 'power1.inOut',
         yoyo: true,
         repeat: -1,
@@ -140,7 +140,7 @@ export function CTA() {
         </a>
 
         {/* Social proof */}
-        <div className="flex items-center justify-center gap-6 mt-10 flex-wrap">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', marginTop: '2.5rem', flexWrap: 'wrap' }}>
           {['⚡ Resposta imediata', '🔒 Pagamento seguro', '📍 Lavras/MG'].map((item) => (
             <span
               key={item}
