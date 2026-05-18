@@ -6,10 +6,10 @@ export function Footer() {
       style={{
         background: 'var(--mob-black)',
         borderTop: '1px solid var(--mob-border)',
-        padding: 'clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 5vw, 5rem)',
+        padding: 'clamp(2.5rem, 5vw, 4rem) 0',
       }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(2rem, 6vw, 6rem)' }}>
         <div
           style={{
             display: 'grid',

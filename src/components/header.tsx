@@ -46,7 +46,7 @@ export function Header({ ready }: HeaderProps) {
           borderBottom: scrolled ? '1px solid var(--mob-border)' : '1px solid transparent',
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between h-16 lg:h-20">
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(2rem, 6vw, 6rem)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4.5rem' }}>
           {/* Logo */}
           <a href="#" className="flex items-center">
             <Image

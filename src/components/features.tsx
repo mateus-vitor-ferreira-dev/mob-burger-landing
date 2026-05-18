@@ -60,11 +60,11 @@ export function Features() {
       id="sobre"
       style={{
         background: 'var(--mob-black)',
-        padding: 'clamp(4rem, 10vw, 9rem) clamp(1.5rem, 5vw, 5rem)',
+        padding: 'clamp(4rem, 10vw, 9rem) 0',
         borderTop: '1px solid var(--mob-border)',
       }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(2rem, 6vw, 6rem)' }}>
         {/* Section label */}
         <div className="feat-title flex items-center gap-4 mb-14">
           <span style={{

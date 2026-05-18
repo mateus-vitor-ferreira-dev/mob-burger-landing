@@ -84,7 +84,7 @@ export function Hero({ ready }: HeroProps) {
         }}
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full px-6 lg:px-10 grid lg:grid-cols-2 gap-10 items-center">
+      <div style={{ position: 'relative', zIndex: 10, maxWidth: '1280px', margin: '0 auto', width: '100%', padding: '0 clamp(2rem, 6vw, 6rem)', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2.5rem', alignItems: 'center' }}>
         {/* Left — copy */}
         <div>
           {/* Eyebrow */}

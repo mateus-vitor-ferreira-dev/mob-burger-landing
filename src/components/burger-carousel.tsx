@@ -1,7 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef } from 'react'
-import Image from 'next/image'
+import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -13,63 +12,80 @@ const BURGERS = [
     name: 'MC Simples',
     desc: 'Pão brioche · maionese · 2 fatias de mussarela · 110g de hambúrguer',
     tag: 'CLÁSSICO',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/83/thumbnail/0002.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T065039Z&X-Amz-Expires=68790&X-Amz-Signature=4c25770e5890485d70d563b2d60bd197dca9f7e82ab453035cac7685dd67dae2&X-Amz-SignedHeaders=host',
+    emoji: '🍔',
+    bg: 'linear-gradient(145deg, #2d1a08 0%, #100a03 60%, #0a0a0a 100%)',
+    glow: 'rgba(255,140,40,0.25)',
+    imagePath: '/burgers/mc-simples.jpg',
   },
   {
     id: 2,
     name: 'X Bacon',
     desc: 'Pão brioche · 2 tiras de bacon · 110g de hambúrguer · 2 fatias de cheddar',
     tag: '🔥 MAIS PEDIDO',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/83/thumbnail/0005.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T155541Z&X-Amz-Expires=34939&X-Amz-Signature=c0147c6d9e45b5405c4446214374acdb9c0eb783f65e5ab65322391fba5f30bf&X-Amz-SignedHeaders=host',
+    emoji: '🥓',
+    bg: 'linear-gradient(145deg, #2d0c08 0%, #10030a 60%, #0a0a0a 100%)',
+    glow: 'rgba(255,60,20,0.28)',
+    imagePath: '/burgers/x-bacon.jpg',
   },
   {
     id: 3,
     name: 'X Bacon Egg',
-    desc: 'Pão brioche · 2 tiras de bacon · 110g de hambúrguer · 2 fatias de cheddar · ovo',
+    desc: 'Pão brioche · 2 tiras de bacon · cheddar · ovo caipira · 110g de hambúrguer',
     tag: 'ESPECIAL',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/85/thumbnail/0004.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T050733Z&X-Amz-Expires=73914&X-Amz-Signature=02cdc6b46829fc0866dfdebb3490478d2620845abc620788895fc371fff71d22&X-Amz-SignedHeaders=host',
+    emoji: '🍳',
+    bg: 'linear-gradient(145deg, #2a2000 0%, #100d00 60%, #0a0a0a 100%)',
+    glow: 'rgba(255,200,0,0.22)',
+    imagePath: '/burgers/x-bacon-egg.jpg',
   },
   {
     id: 4,
     name: 'Duplo BBQ',
-    desc: 'Pão brioche · molho BBQ · cebola roxa caramelizada · 2 fatias de bacon · cheddar duplo · 220g de hambúrguer',
+    desc: 'Pão brioche · molho BBQ · cebola caramelizada · 2 bacons · cheddar duplo · 220g',
     tag: 'PREMIUM',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/83/thumbnail/0003.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T104249Z&X-Amz-Expires=54384&X-Amz-Signature=e812f35e61a80e08734f0d6f122a6fc588e682d695d7f5345529d9d2cc787c84&X-Amz-SignedHeaders=host',
+    emoji: '🔥',
+    bg: 'linear-gradient(145deg, #1e0a00 0%, #0d0500 60%, #0a0a0a 100%)',
+    glow: 'rgba(200,60,0,0.30)',
+    imagePath: '/burgers/duplo-bbq.jpg',
   },
   {
     id: 5,
     name: 'MC Salad',
-    desc: 'Pão brioche · molho especial · queijo · alface · tomate · cebola · 110g hambúrguer',
+    desc: 'Pão brioche · molho especial · queijo · alface · tomate · cebola · 110g',
     tag: 'LEVE',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/83/thumbnail/0004.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T072625Z&X-Amz-Expires=67993&X-Amz-Signature=7a8e29d153cf28e12d481da8f577abbdfd104935617f9c8e7e666f8e500b4c33&X-Amz-SignedHeaders=host',
+    emoji: '🥗',
+    bg: 'linear-gradient(145deg, #0a1e08 0%, #050d03 60%, #0a0a0a 100%)',
+    glow: 'rgba(60,180,40,0.20)',
+    imagePath: '/burgers/mc-salad.jpg',
   },
   {
     id: 6,
     name: 'Frango Simples',
     desc: 'Pão brioche · 2 fatias de mussarela · filé de frango grelhado',
     tag: 'FRANGO',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/83/thumbnail/0006.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T042745Z&X-Amz-Expires=77463&X-Amz-Signature=1ae727305ab03b9988eaaa8441b3d765ece2483523976b1d2fafa4a4abef7694&X-Amz-SignedHeaders=host',
+    emoji: '🍗',
+    bg: 'linear-gradient(145deg, #1a1500 0%, #0d0c00 60%, #0a0a0a 100%)',
+    glow: 'rgba(220,170,0,0.22)',
+    imagePath: '/burgers/frango-simples.jpg',
   },
   {
     id: 7,
-    name: 'Frango Salada',
-    desc: 'Pão brioche · molho · tomate · alface · 2 fatias de mussarela · frango grelhado',
-    tag: 'FRANGO',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/83/thumbnail/0007.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T104728Z&X-Amz-Expires=52994&X-Amz-Signature=1f933a55b4a29c9e72ae5f96b7424e322f4e3ceb1f921b761532ec9485c6b316&X-Amz-SignedHeaders=host',
-  },
-  {
-    id: 8,
     name: 'Frango Bacon',
     desc: 'Pão brioche · cheddar · alface · tomate · cebola · frango grelhado com bacon',
     tag: 'FRANGO',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/83/thumbnail/0008.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T064948Z&X-Amz-Expires=67873&X-Amz-Signature=a2be2feb18621740269977f05317f748a836324e0b198562635d8c572f3194b8&X-Amz-SignedHeaders=host',
+    emoji: '🥩',
+    bg: 'linear-gradient(145deg, #200c08 0%, #100503 60%, #0a0a0a 100%)',
+    glow: 'rgba(200,80,20,0.25)',
+    imagePath: '/burgers/frango-bacon.jpg',
   },
   {
-    id: 9,
+    id: 8,
     name: 'Frango Empanado',
     desc: 'Pão brioche · filé empanado e frito · queijo · alface · tomate · molho da casa',
     tag: '🍗 CROCANTE',
-    image: 'https://document-export.canva.com/pNRrs/DAHJ7BpNRrs/83/thumbnail/0009.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUHWEOTUD6Q%2F20260517%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260517T155136Z&X-Amz-Expires=35912&X-Amz-Signature=ae43a78efe45b73d196be1547891e2217c72859143751ff003259fad26c9db4b&X-Amz-SignedHeaders=host',
+    emoji: '✨',
+    bg: 'linear-gradient(145deg, #1a1000 0%, #0d0800 60%, #0a0a0a 100%)',
+    glow: 'rgba(180,130,0,0.22)',
+    imagePath: '/burgers/frango-empanado.jpg',
   },
 ]
 
@@ -86,47 +102,23 @@ export function BurgerCarousel() {
       const section = sectionRef.current
       if (!track || !section) return
 
-      /* ── Title reveal ── */
       gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 40,
-        duration: 0.7,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 80%',
-        },
+        opacity: 0, y: 40, duration: 0.7, ease: 'power2.out',
+        scrollTrigger: { trigger: section, start: 'top 80%' },
       })
 
-      /* ── Horizontal scroll ── */
       const getDistance = () => track.scrollWidth - window.innerWidth
 
       gsap.to(track, {
         x: () => -getDistance(),
         ease: 'none',
         scrollTrigger: {
-          trigger:            section,
-          pin:                true,
-          scrub:              0.8,
+          trigger: section,
+          pin: true,
+          scrub: 0.8,
           invalidateOnRefresh: true,
-          end:                () => '+=' + getDistance(),
+          end: () => '+=' + getDistance(),
         },
-      })
-
-      /* ── Cards stagger on scroll-enter ── */
-      gsap.utils.toArray<HTMLElement>('.burger-card').forEach((card, i) => {
-        gsap.from(card, {
-          opacity: 0,
-          y: 50,
-          duration: 0.6,
-          ease: 'power2.out',
-          delay: i * 0.05,
-          scrollTrigger: {
-            trigger:            section,
-            start:              'top 70%',
-            toggleActions:      'play none none none',
-          },
-        })
       })
     }, sectionRef)
 
@@ -147,11 +139,11 @@ export function BurgerCarousel() {
         <div
           ref={titleRef}
           style={{
-            minWidth: 'clamp(280px, 28vw, 400px)',
+            minWidth: 'clamp(280px, 28vw, 420px)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
-            padding: 'clamp(2rem, 5vw, 5rem)',
+            padding: 'clamp(2rem, 5vw, 5rem) clamp(2rem, 6vw, 6rem)',
             borderRight: '1px solid var(--mob-border)',
             flexShrink: 0,
           }}
@@ -184,8 +176,8 @@ export function BurgerCarousel() {
             marginTop: '1.5rem',
             lineHeight: 1.6,
           }}>
-            Arraste para explorar<br />
-            todos os burgers ↗
+            Arraste ou role para<br />
+            explorar o cardápio ↗
           </p>
         </div>
 
@@ -195,7 +187,7 @@ export function BurgerCarousel() {
             key={b.id}
             className="burger-card"
             style={{
-              minWidth: 'clamp(260px, 28vw, 360px)',
+              minWidth: 'clamp(280px, 26vw, 360px)',
               height: '100vh',
               display: 'flex',
               flexDirection: 'column',
@@ -206,38 +198,54 @@ export function BurgerCarousel() {
               cursor: 'pointer',
             }}
             onMouseEnter={(e) => {
-              const img = e.currentTarget.querySelector('.card-img') as HTMLElement
-              if (img) gsap.to(img, { scale: 1.06, duration: 0.5, ease: 'power2.out' })
+              gsap.to(e.currentTarget.querySelector('.card-visual'), { scale: 1.04, duration: 0.5, ease: 'power2.out' })
             }}
             onMouseLeave={(e) => {
-              const img = e.currentTarget.querySelector('.card-img') as HTMLElement
-              if (img) gsap.to(img, { scale: 1, duration: 0.5, ease: 'power2.out' })
+              gsap.to(e.currentTarget.querySelector('.card-visual'), { scale: 1, duration: 0.5, ease: 'power2.out' })
             }}
           >
-            {/* Image */}
-            <div style={{ position: 'relative', flex: '1', overflow: 'hidden', background: 'var(--mob-card)' }}>
-              <div
-                className="card-img"
-                style={{ position: 'absolute', inset: 0, transformOrigin: 'center' }}
-              >
-                <Image
-                  src={b.image}
-                  alt={b.name}
-                  fill
-                  sizes="360px"
-                  style={{ objectFit: 'cover', objectPosition: 'center' }}
-                  unoptimized
-                />
-              </div>
-              {/* Gradient overlay */}
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(to bottom, transparent 40%, rgba(8,7,11,0.95) 100%)',
-                  zIndex: 1,
-                }}
-              />
+            {/* Visual area — gradient + emoji (swap for <Image> when photos are ready) */}
+            <div
+              className="card-visual"
+              style={{
+                flex: 1,
+                background: b.bg,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                overflow: 'hidden',
+                transformOrigin: 'center',
+              }}
+            >
+              {/* Glow spot */}
+              <div style={{
+                position: 'absolute',
+                width: '60%',
+                height: '60%',
+                borderRadius: '50%',
+                background: `radial-gradient(circle, ${b.glow} 0%, transparent 70%)`,
+                filter: 'blur(30px)',
+              }} />
+
+              {/* Emoji */}
+              <span style={{
+                fontSize: 'clamp(5rem, 8vw, 8rem)',
+                lineHeight: 1,
+                position: 'relative',
+                zIndex: 1,
+                filter: 'drop-shadow(0 4px 24px rgba(0,0,0,0.5))',
+              }}>
+                {b.emoji}
+              </span>
+
+              {/* Bottom gradient fade */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to bottom, transparent 50%, rgba(8,7,11,0.95) 100%)',
+              }} />
+
               {/* Tag */}
               <div style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 2 }}>
                 <span style={{
@@ -252,6 +260,19 @@ export function BurgerCarousel() {
                 }}>
                   {b.tag}
                 </span>
+              </div>
+
+              {/* Hint: path for real photo */}
+              <div style={{
+                position: 'absolute',
+                bottom: '1rem',
+                right: '1rem',
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.55rem',
+                color: 'rgba(255,255,255,0.2)',
+                letterSpacing: '0.05em',
+              }}>
+                foto: {b.imagePath}
               </div>
             </div>
 
@@ -284,13 +305,9 @@ export function BurgerCarousel() {
                 href="#pedido"
                 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '0.9rem',
+                  fontSize: '0.95rem',
                   letterSpacing: '0.06em',
                   color: 'var(--mob-fire)',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  transition: 'gap 0.2s',
                 }}
               >
                 Pedir agora →
@@ -299,7 +316,6 @@ export function BurgerCarousel() {
           </div>
         ))}
 
-        {/* End padding */}
         <div style={{ minWidth: 'clamp(2rem, 5vw, 5rem)', flexShrink: 0 }} />
       </div>
     </section>

@@ -66,7 +66,7 @@ export function CTA() {
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto">
+      <div style={{ position: 'relative', zIndex: 10, maxWidth: '900px', margin: '0 auto', padding: '0 clamp(2rem, 6vw, 6rem)' }}>
         <p style={{
           fontFamily: 'var(--font-body)',
           fontSize: '0.7rem',
