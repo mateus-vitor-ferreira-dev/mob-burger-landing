@@ -117,70 +117,114 @@ export function Hero({ ready }: HeroProps) {
         Artesanal · Lavras/MG
       </p>
 
-      {/* ── BRAND NAME — fire gradient contínuo ── */}
-      {/*
-        background-clip:text não cascateia para filhos no CSS.
-        Solução: cada linha tem seu segmento do gradiente de chamas,
-        continuando de onde a anterior parou (simula uma chama única).
-      */}
-      <h1
+      {/* ── BRAND NAME + M.O.B ghost ── */}
+      <div
         style={{
-          fontFamily: 'var(--font-display)',
-          lineHeight: 0.87,
-          letterSpacing: '-0.01em',
+          display: 'grid',
+          gridTemplateColumns: 'auto 1fr',
+          alignItems: 'center',
+          gap: 'clamp(1rem, 3vw, 3rem)',
           position: 'relative',
           zIndex: 2,
           marginBottom: 'clamp(2rem, 5vh, 4rem)',
         }}
       >
-        {/* MURILO — ponta da chama: branco-amarelo → âmbar */}
-        <div className="overflow-clip">
-          <div
-            ref={line1Ref}
-            style={{
-              fontSize: 'clamp(5.5rem, 21vw, 20rem)',
-              background: 'linear-gradient(to bottom, #FFFDE7 0%, #FFE082 25%, #FFCA28 55%, #FFB300 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            MURILO
+        {/* Left — brand name fire gradient */}
+        <h1
+          style={{
+            fontFamily: 'var(--font-display)',
+            lineHeight: 0.87,
+            letterSpacing: '-0.01em',
+          }}
+        >
+          {/* MURILO */}
+          <div className="overflow-clip">
+            <div
+              ref={line1Ref}
+              style={{
+                fontSize: 'clamp(5.5rem, 19vw, 18rem)',
+                background: 'linear-gradient(to bottom, #FFFDE7 0%, #FFE082 25%, #FFCA28 55%, #FFB300 100%)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              }}
+            >
+              MURILO
+            </div>
           </div>
-        </div>
 
-        {/* ORIGINAL — corpo da chama: âmbar → laranja-fogo */}
-        <div className="overflow-clip">
-          <div
-            ref={line2Ref}
-            style={{
-              fontSize: 'clamp(4rem, 16.5vw, 16rem)',
-              background: 'linear-gradient(to bottom, #FFB300 0%, #FF8F00 30%, #FF6D00 65%, #F4511E 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            ORIGINAL
+          {/* ORIGINAL */}
+          <div className="overflow-clip">
+            <div
+              ref={line2Ref}
+              style={{
+                fontSize: 'clamp(3.5rem, 14.5vw, 14rem)',
+                background: 'linear-gradient(to bottom, #FFB300 0%, #FF8F00 30%, #FF6D00 65%, #F4511E 100%)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              }}
+            >
+              ORIGINAL
+            </div>
           </div>
-        </div>
 
-        {/* BURGER — base da chama: laranja-vermelho → vermelho escuro */}
-        <div className="overflow-clip">
-          <div
-            ref={line3Ref}
-            style={{
-              fontSize: 'clamp(5.5rem, 21vw, 20rem)',
-              background: 'linear-gradient(to bottom, #E64A19 0%, #C62828 45%, #B71C1C 75%, #7B1414 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            BURGER
+          {/* BURGER */}
+          <div className="overflow-clip">
+            <div
+              ref={line3Ref}
+              style={{
+                fontSize: 'clamp(5.5rem, 19vw, 18rem)',
+                background: 'linear-gradient(to bottom, #E64A19 0%, #C62828 45%, #B71C1C 75%, #7B1414 100%)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+              }}
+            >
+              BURGER
+            </div>
           </div>
+        </h1>
+
+        {/* Right — M · O · B ghost editorial */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 0,
+            lineHeight: 0.85,
+          }}
+        >
+          {[
+            { letter: 'M', stroke: 'rgba(255,225,80,0.28)' },
+            { letter: 'O', stroke: 'rgba(255,140,0,0.24)' },
+            { letter: 'B', stroke: 'rgba(200,40,20,0.22)' },
+          ].map(({ letter, stroke }) => (
+            <span
+              key={letter}
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(4rem, 14vw, 15rem)',
+                color: 'transparent',
+                WebkitTextStroke: `2px ${stroke}`,
+                display: 'block',
+                textAlign: 'center',
+                userSelect: 'none',
+              }}
+            >
+              {letter}
+            </span>
+          ))}
+          {/* Label abaixo */}
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: '0.58rem',
+            letterSpacing: '0.22em',
+            color: 'rgba(255,150,0,0.3)',
+            textTransform: 'uppercase',
+            marginTop: '0.5rem',
+            textAlign: 'center',
+          }}>
+            Murilo Original Burger
+          </p>
         </div>
-      </h1>
+      </div>
 
       {/* ── Bottom row ── */}
       <div
