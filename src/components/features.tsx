@@ -66,7 +66,7 @@ export function Features() {
     >
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(2rem, 6vw, 6rem)' }}>
         {/* Section label */}
-        <div className="feat-title flex items-center gap-4 mb-14">
+        <div className="feat-title" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem' }}>
           <span style={{
             fontFamily: 'var(--font-body)',
             fontSize: '0.7rem',
