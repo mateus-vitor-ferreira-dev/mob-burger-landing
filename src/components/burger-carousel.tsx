@@ -99,8 +99,8 @@ function Card({
   const [imgFailed, setImgFailed] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
 
-  const handleEnter = () => gsap.to(cardRef.current?.querySelector('.c-inner'), { scale: 1.04, duration: 0.45, ease: 'power2.out' })
-  const handleLeave = () => gsap.to(cardRef.current?.querySelector('.c-inner'), { scale: 1,    duration: 0.45, ease: 'power2.out' })
+  const handleEnter = () => { const el = cardRef.current?.querySelector('.c-inner'); if (el) gsap.to(el, { scale: 1.04, duration: 0.45, ease: 'power2.out' }) }
+  const handleLeave = () => { const el = cardRef.current?.querySelector('.c-inner'); if (el) gsap.to(el, { scale: 1,    duration: 0.45, ease: 'power2.out' }) }
 
   return (
     <div
