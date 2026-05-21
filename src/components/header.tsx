@@ -13,6 +13,7 @@ const NAV: { label: string; href: string; carouselId?: string }[] = [
   { label: 'Sobre',      href: '#sobre' },
   { label: 'Combos',     href: '#cardápio', carouselId: 'carousel-combos' },
   { label: 'Sobremesas', href: '#cardápio', carouselId: 'carousel-sobremesas' },
+  { label: 'Porções',   href: '#cardápio', carouselId: 'carousel-porcoes' },
   { label: 'Como Pedir', href: '#como-pedir' },
   { label: 'Avaliações', href: '#avaliacoes' },
   { label: 'Galeria',    href: '#galeria' },
@@ -74,6 +75,7 @@ export function Header({ ready }: HeaderProps) {
       { id: 'galeria',    label: 'Galeria' },
       { id: 'avaliacoes', label: 'Avaliações' },
       { id: 'como-pedir', label: 'Como Pedir' },
+      { id: 'cardápio',   label: 'Porções' },
       { id: 'sobre',      label: 'Sobre' },
       { id: 'cardápio',   label: 'Cardápio' },
     ]

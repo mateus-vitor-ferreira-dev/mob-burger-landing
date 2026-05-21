@@ -126,6 +126,18 @@ const CHICKEN: (BurgerDetail & { id: string; image: string })[] = [
 
 const COMBOS: (BurgerDetail & { id: string; image: string; imageFit: 'cover' | 'contain' })[] = [
   {
+    id: 'k0a', name: 'Combo Fritas', tag: 'COMBO', price: '+ R$ 9,90',
+    ingredients: ['Burger à escolha', 'Batata Frita 200g'],
+    bg: ['#2A1800', '#120C00'], accent: '#FFB300',
+    image: '/burgers/combo-mob-fritas.png', imageFit: 'cover',
+  },
+  {
+    id: 'k0b', name: 'Combo Completo', tag: 'COMBO', price: '+ R$ 14,00',
+    ingredients: ['Burger à escolha', 'Batata Frita 200g', 'Coca-Cola Lata 350ml'],
+    bg: ['#1A0A00', '#0A0500'], accent: '#FF6B00',
+    image: '/burgers/combo-mob-completo.png', imageFit: 'cover',
+  },
+  {
     id: 'k1', name: 'Combo Clássico', tag: 'COMBO', price: 'R$ 38,00',
     ingredients: ['Mob Classic', 'Bebida lata'],
     bg: ['#2A0E05', '#110502'], accent: '#FF4500',
@@ -154,6 +166,15 @@ const COMBOS: (BurgerDetail & { id: string; image: string; imageFit: 'cover' | '
     ingredients: ['4 Burgers à escolha', '4 Bebidas lata', '2 Sobremesas'],
     bg: ['#0A2410', '#030F08'], accent: '#4CAF50',
     image: '/burgers/combo-mob-familia.png', imageFit: 'contain',
+  },
+]
+
+const PORCOES: (BurgerDetail & { id: string; image: string; imageFit: 'cover' | 'contain' })[] = [
+  {
+    id: 'p1', name: 'Batata Frita', tag: '🍟 PORÇÃO', price: 'R$ 11,90',
+    ingredients: ['Batata frita 200g', 'Crocante por fora', 'Macia por dentro'],
+    bg: ['#2A1E00', '#120E00'], accent: '#FFB300',
+    image: '/burgers/batata-frita.png', imageFit: 'contain',
   },
 ]
 
@@ -190,6 +211,7 @@ const ALL_CARDS = [
   ...CHICKEN,
   ...COMBOS,
   ...SOBREMESAS,
+  ...PORCOES,
 ] as (BurgerDetail & { id: string; image?: string })[]
 
 /* ─── Card ───────────────────────────────────────────────────── */
@@ -615,6 +637,17 @@ export function BurgerCarousel() {
               key={s.id}
               ref={(el) => { cardRefs.current[BURGERS.length + CHICKEN.length + COMBOS.length + i] = el }}
               burger={s}
+              onOpen={setSelected}
+            />
+          ))}
+
+          {/* Porções separator + cards */}
+          <SectionLabel label="PORÇÕES" id="carousel-porcoes" />
+          {PORCOES.map((p, i) => (
+            <Card
+              key={p.id}
+              ref={(el) => { cardRefs.current[BURGERS.length + CHICKEN.length + COMBOS.length + SOBREMESAS.length + i] = el }}
+              burger={p}
               onOpen={setSelected}
             />
           ))}

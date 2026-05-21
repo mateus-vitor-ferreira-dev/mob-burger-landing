@@ -137,6 +137,9 @@
         padding: 0 20px;
         overflow-x: auto;
         scrollbar-width: none;
+        position: sticky;
+        top: 74px;
+        z-index: 90;
       }
       .tabs::-webkit-scrollbar {
         display: none;
@@ -447,10 +450,32 @@
         letter-spacing: 2px;
         margin-top: 4px;
       }
+      .ft-contacts {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+      .ft-contact a {
+        font-size: 0.68rem;
+        color: var(--muted);
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .ft-contact a span { color: var(--orange); font-weight: 600; }
+      .ft-contact a:active span { color: #fff; }
 
       @media (max-width: 600px) {
         header {
           padding: 10px 14px;
+        }
+        .tabs {
+          top: 66px;
         }
         .section {
           padding: 18px 12px 48px;
@@ -1009,31 +1034,36 @@
     <footer>
       <div class="ft">M.O.B</div>
       <p>SMASH BURGER · ARTESANAL · FEITO PRA VOCÊ</p>
+      <div class="ft-contacts">
+        <div class="ft-contact">
+          <a href="https://www.instagram.com/murilooriginalburger" target="_blank" rel="noopener">
+            📸 Instagram <span>@murilooriginalburger</span>
+          </a>
+        </div>
+        <div class="ft-contact">
+          <a href="https://wa.me/5535997209115" target="_blank" rel="noopener">
+            💬 WhatsApp <span>(35) 99720-9115</span>
+          </a>
+        </div>
+        <div class="ft-contact">
+          <a href="https://maps.google.com/?q=Lavras,MG" target="_blank" rel="noopener">
+            📍 Localização <span>Lavras, MG</span>
+          </a>
+        </div>
+      </div>
     </footer>
 
     <script>
       function showTab(id, btn) {
-        document
-          .querySelectorAll(".section")
-          .forEach((s) => s.classList.remove("active"));
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
         document.getElementById("tab-" + id).classList.add("active");
         btn.classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      document.querySelectorAll(".tab-btn").forEach(function (btn) {
-        ["click", "touchend"].forEach(function (evt) {
-          btn.addEventListener(
-            evt,
-            function (e) {
-              e.preventDefault();
-              showTab(btn.dataset.tab, btn);
-            },
-            { passive: false },
-          );
-        });
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => showTab(btn.dataset.tab, btn));
       });
     </script>
   </body>
