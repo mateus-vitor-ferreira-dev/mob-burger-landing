@@ -114,9 +114,9 @@ export function Header({ ready }: HeaderProps) {
           borderBottom: scrolled ? '1px solid var(--mob-border)' : '1px solid transparent',
         }}
       >
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(2rem, 6vw, 6rem)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4.5rem' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', paddingLeft: 'clamp(1rem, 3vw, 3rem)', paddingRight: 'clamp(1rem, 3vw, 3rem)', display: 'flex', alignItems: 'center', gap: '1.5rem', height: '4.5rem' }}>
           {/* Logo */}
-          <a href="#" className="flex items-center">
+          <a href="#" className="flex items-center shrink-0">
             <Image
               src="/mob-logo.png"
               alt="M.O.B Burger"
@@ -127,49 +127,49 @@ export function Header({ ready }: HeaderProps) {
             />
           </a>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
-            {NAV.map((item) => {
-              const isActive = activeNav === item.label
-              return (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  onClick={(e) => {
-                    setActiveNav(item.label)
-                    if (item.carouselId) {
-                      e.preventDefault()
-                      scrollToCarouselSection(item.carouselId)
-                    }
-                  }}
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: '0.8rem',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    transition: 'color 0.2s, border-color 0.2s',
-                    cursor: 'pointer',
-                    paddingBottom: '3px',
-                    borderBottom: isActive
-                      ? '1.5px solid var(--mob-fire)'
-                      : '1.5px solid transparent',
-                    color: isActive ? 'var(--mob-fire)' : 'var(--mob-muted)',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--mob-text)'
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--mob-muted)'
-                  }}
-                >
-                  {item.label}
-                </a>
-              )
-            })}
-          </nav>
+          {/* Desktop nav + CTA agrupados à direita */}
+          <div className="hidden md:flex items-center gap-6" style={{ marginLeft: 'auto' }}>
+            <nav className="flex items-center gap-6">
+              {NAV.map((item) => {
+                const isActive = activeNav === item.label
+                return (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    onClick={(e) => {
+                      setActiveNav(item.label)
+                      if (item.carouselId) {
+                        e.preventDefault()
+                        scrollToCarouselSection(item.carouselId)
+                      }
+                    }}
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '0.8rem',
+                      letterSpacing: '0.1em',
+                      textTransform: 'uppercase',
+                      transition: 'color 0.2s, border-color 0.2s',
+                      cursor: 'pointer',
+                      paddingBottom: '3px',
+                      borderBottom: isActive
+                        ? '1.5px solid var(--mob-fire)'
+                        : '1.5px solid transparent',
+                      color: isActive ? 'var(--mob-fire)' : 'var(--mob-muted)',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--mob-text)'
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--mob-muted)'
+                    }}
+                  >
+                    {item.label}
+                  </a>
+                )
+              })}
+            </nav>
 
-          {/* CTA */}
-          <div className="hidden md:flex items-center gap-4">
+            {/* CTA com separação fixa do último item da nav */}
             <a
               href="https://wa.me/5535997209115"
               target="_blank"
@@ -183,6 +183,7 @@ export function Header({ ready }: HeaderProps) {
                 padding: '0.55rem 1.4rem',
                 borderRadius: '9999px',
                 transition: 'opacity 0.2s, transform 0.2s',
+                whiteSpace: 'nowrap',
               }}
               onMouseEnter={(e) => {
                 ;(e.currentTarget as HTMLElement).style.opacity = '0.88'
