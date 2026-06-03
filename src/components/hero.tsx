@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { MagneticButton } from './magnetic-button'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -57,6 +58,29 @@ export function Hero({ ready }: HeroProps) {
           end: 'bottom top',
           scrub: 1.5,
         },
+      })
+
+
+      // Contador animado nos stats
+      document.querySelectorAll('[data-to]').forEach((el) => {
+        const from    = Number(el.getAttribute('data-from') ?? 0)
+        const to      = Number(el.getAttribute('data-to')   ?? 0)
+        const suffix  = el.getAttribute('data-suffix') ?? ''
+        const isRange = el.getAttribute('data-range') === 'true'
+
+        const obj = { val: from }
+        gsap.to(obj, {
+          val: to,
+          duration: 1.8,
+          ease: 'power2.out',
+          roundProps: 'val',
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+          onUpdate() {
+            el.textContent = isRange
+              ? `${from}–${to}${suffix}`   // range fixo: 40-60min
+              : `${obj.val}${suffix}`
+          },
+        })
       })
     }, sectionRef)
 
@@ -161,7 +185,7 @@ export function Hero({ ready }: HeroProps) {
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}
             >
-              ORIGINAL
+              ORIGINAL&rsquo;S
             </div>
           </div>
 
@@ -217,11 +241,10 @@ export function Hero({ ready }: HeroProps) {
             fontSize: '0.58rem',
             letterSpacing: '0.22em',
             color: 'rgba(255,150,0,0.3)',
-            textTransform: 'uppercase',
             marginTop: '0.5rem',
             textAlign: 'center',
           }}>
-            Murilo Original Burger
+            ORIGINAL&rsquo;S
           </p>
         </div>
       </div>
@@ -253,29 +276,30 @@ export function Hero({ ready }: HeroProps) {
           </p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <MagneticButton>
+              <a
+                href="#pedido"
+                style={{
+                  fontFamily: 'var(--font-display)', fontSize: '1.05rem',
+                  letterSpacing: '0.06em', background: 'var(--mob-fire)',
+                  color: '#fff', padding: '0.75rem 2rem', borderRadius: '9999px',
+                  transition: 'box-shadow 0.2s',
+                  display: 'block',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = '0 0 32px rgba(255,69,0,0.55)'
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = 'none'
+                }}
+              >
+                Fazer Pedido
+              </a>
+            </MagneticButton>
             <a
-              href="#pedido"
-              style={{
-                fontFamily: 'var(--font-display)', fontSize: '1.05rem',
-                letterSpacing: '0.06em', background: 'var(--mob-fire)',
-                color: '#fff', padding: '0.75rem 2rem', borderRadius: '9999px',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.transform = 'scale(1.04)'
-                el.style.boxShadow = '0 0 32px rgba(255,69,0,0.5)'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.transform = 'scale(1)'
-                el.style.boxShadow = 'none'
-              }}
-            >
-              Fazer Pedido
-            </a>
-            <a
-              href="#cardápio"
+              href="/cardapio.html"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 fontFamily: 'var(--font-display)', fontSize: '1.05rem',
                 letterSpacing: '0.06em', color: 'var(--mob-text)',
@@ -299,34 +323,31 @@ export function Hero({ ready }: HeroProps) {
           </div>
         </div>
 
-        {/* Right: stats horizontal */}
-        <div style={{
-          display: 'flex',
-          gap: 'clamp(1.5rem, 3vw, 3rem)',
-          alignItems: 'flex-end',
-        }}>
+        {/* Right: stats com contador animado */}
+        <div style={{ display: 'flex', gap: 'clamp(1.5rem, 3vw, 3rem)', alignItems: 'flex-end' }}>
           {[
-            { num: '9+',    label: 'opções' },
-            { num: '100%', label: 'artesanal' },
-            { num: '30min', label: 'entrega' },
-          ].map(({ num, label }, i) => (
-            <div key={label} style={{ textAlign: 'center' }}>
+            { id: 'stat-opcoes',    from: 0,   to: 22,  suffix: '+',   label: 'opções' },
+            { id: 'stat-artesanal', from: 0,   to: 100, suffix: '%',   label: 'artesanal' },
+            { id: 'stat-entrega',   from: 40,  to: 60,  suffix: 'min', label: 'entrega', range: true },
+          ].map(({ id, from, to, suffix, label, range }, i) => (
+            <div key={label} style={{ textAlign: 'center', position: 'relative' }}>
               {i > 0 && (
                 <span style={{
-                  position: 'absolute',
-                  left: '-1.5rem',
-                  top: '50%',
+                  position: 'absolute', left: '-1.5rem', top: '50%',
                   width: '1px', height: '24px',
-                  background: 'var(--mob-border)',
-                  transform: 'translateY(-50%)',
+                  background: 'var(--mob-border)', transform: 'translateY(-50%)',
                 }} />
               )}
-              <p style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(1.8rem, 3vw, 2.8rem)',
-                color: 'var(--mob-fire)', lineHeight: 1,
-              }}>
-                {num}
+              <p
+                id={id}
+                data-from={from} data-to={to} data-suffix={suffix} data-range={range ? 'true' : ''}
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(1.8rem, 3vw, 2.8rem)',
+                  color: 'var(--mob-fire)', lineHeight: 1,
+                }}
+              >
+                {range ? `${from}–${to}${suffix}` : `${to}${suffix}`}
               </p>
               <p style={{
                 fontFamily: 'var(--font-body)', fontSize: '0.62rem',

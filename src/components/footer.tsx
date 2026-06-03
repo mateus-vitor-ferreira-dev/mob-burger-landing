@@ -32,7 +32,7 @@ export function Footer() {
               letterSpacing: '0.15em', color: 'var(--mob-fire)',
               textTransform: 'uppercase', marginBottom: '0.4rem',
             }}>
-              Murilo Original Burger
+              Original's
             </p>
             <p
               style={{
@@ -93,17 +93,30 @@ export function Footer() {
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {[
-                { label: 'Instagram',  value: '@mcburguer0' },
-                { label: 'WhatsApp',   value: '(35) 99720-9115' },
-                { label: 'Localização', value: 'Lavras, MG' },
-              ].map(({ label, value }) => (
+                { label: 'Instagram',   value: '@murilooriginalburger', href: 'https://www.instagram.com/murilooriginalburger?igsh=MWkxczJzbGp4MnY3Mg==' },
+                { label: 'WhatsApp',    value: '(35) 99720-9115',       href: 'https://wa.me/5535997209115' },
+                { label: 'Localização', value: 'Lavras, MG',            href: undefined },
+              ].map(({ label, value, href }) => (
                 <div key={label}>
                   <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.65rem', color: 'var(--mob-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                     {label}
                   </p>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'var(--mob-text)' }}>
-                    {value}
-                  </p>
+                  {href ? (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'var(--mob-text)', transition: 'color 0.2s' }}
+                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--mob-fire)')}
+                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--mob-text)')}
+                    >
+                      {value}
+                    </a>
+                  ) : (
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'var(--mob-text)' }}>
+                      {value}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -122,9 +135,8 @@ export function Footer() {
               Horário
             </p>
             {[
-              { day: 'Seg – Sex',  time: '18h – 23h' },
-              { day: 'Sábados',   time: '12h – 00h' },
-              { day: 'Domingos',  time: '12h – 22h' },
+              { day: 'Seg – Qua', time: '18h30 – 22h30' },
+              { day: 'Qui – Dom', time: '18h30 – 23h' },
             ].map(({ day, time }) => (
               <div key={day} className="flex justify-between gap-4 mb-1.5" style={{ maxWidth: '180px' }}>
                 <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--mob-muted)' }}>{day}</p>
@@ -147,7 +159,7 @@ export function Footer() {
           }}
         >
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--mob-muted)' }}>
-            © 2025 Mob Burger — Todos os direitos reservados
+            © 2025 Original's — Todos os direitos reservados
           </p>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--mob-muted)' }}>
             Desenvolvido por{' '}

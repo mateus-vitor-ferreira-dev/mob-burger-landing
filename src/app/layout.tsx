@@ -14,9 +14,9 @@ const dmSans = DM_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'M.O.B — Murilo Original Burger · Lavras/MG',
+  title: "M.O.B — Original's · Lavras/MG",
   description:
-    'Murilo Original Burger — hamburguer artesanal em Lavras/MG. Peça online com Pix ou cartão, sem comissão de terceiros.',
+    "Original's — hamburguer artesanal em Lavras/MG. Peça online com Pix, débito ou crédito à vista, sem comissão de terceiros.",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

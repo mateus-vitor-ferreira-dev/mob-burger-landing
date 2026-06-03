@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>M.O.B — Cardápio</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Anton&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0e0d0b;
+        --surface: #161410;
+        --card: #1c1a16;
+        --border: #2e2b24;
+        --orange: #d85a30;
+        --cream: #f5f0e8;
+        --muted: #7a7468;
+        --tag: #252118;
+      }
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--cream);
+        font-family: "Space Mono", monospace;
+        overflow-x: hidden;
+      }
+
+      /* HEADER */
+      header {
+        background: var(--surface);
+        border-bottom: 2px solid var(--orange);
+        padding: 14px 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo-box {
+        width: 46px;
+        height: 46px;
+        background: var(--orange);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo-box span {
+        font-family: "Bebas Neue";
+        font-size: 0.75rem;
+        color: #000;
+        letter-spacing: 1px;
+      }
+      .logo-text .brand {
+        font-family: "Bebas Neue";
+        font-size: 1.8rem;
+        color: var(--orange);
+        letter-spacing: 4px;
+        line-height: 1;
+      }
+      .logo-text .sub {
+        font-size: 0.5rem;
+        letter-spacing: 3px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .header-tag {
+        font-size: 0.55rem;
+        letter-spacing: 2px;
+        color: var(--orange);
+        border: 1px solid var(--orange);
+        padding: 3px 8px;
+        text-transform: uppercase;
+      }
+
+      /* HERO */
+      .hero {
+        background: linear-gradient(
+          135deg,
+          #0e0d0b 0%,
+          #1c1208 60%,
+          #0e0d0b 100%
+        );
+        padding: 40px 24px 28px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "M.O.B";
+        position: absolute;
+        font-family: "Bebas Neue";
+        font-size: 20vw;
+        color: rgba(216, 90, 48, 0.04);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        white-space: nowrap;
+      }
+      .hero h1 {
+        font-family: "Bebas Neue";
+        font-size: clamp(2.2rem, 6vw, 4.5rem);
+        letter-spacing: 8px;
+        color: var(--cream);
+        line-height: 1;
+      }
+      .hero h1 span {
+        color: var(--orange);
+      }
+      .hero p {
+        color: var(--muted);
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        margin-top: 8px;
+        text-transform: uppercase;
+      }
+
+      /* TABS */
+      .tabs {
+        display: flex;
+        background: var(--surface);
+        border-bottom: 2px solid var(--border);
+        padding: 0 20px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        position: sticky;
+        top: 74px;
+        z-index: 90;
+      }
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .tab-btn {
+        font-family: "Bebas Neue";
+        font-size: 1rem;
+        letter-spacing: 3px;
+        color: var(--muted);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 14px 18px;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        transition: all 0.2s;
+        white-space: nowrap;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .tab-btn:hover {
+        color: var(--cream);
+      }
+      .tab-btn.active {
+        color: var(--orange);
+        border-bottom-color: var(--orange);
+      }
+
+      /* SECTIONS */
+      .section {
+        display: none;
+        padding: 28px 20px 60px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .section.active {
+        display: block;
+      }
+      .sec-title {
+        font-family: "Bebas Neue";
+        font-size: 2rem;
+        letter-spacing: 5px;
+        color: var(--cream);
+        margin-bottom: 6px;
+      }
+      .sec-title span {
+        color: var(--orange);
+      }
+      .sec-sub {
+        font-size: 0.6rem;
+        color: var(--muted);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 14px;
+        margin-bottom: 28px;
+      }
+
+      /* CARDS GRID */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 18px;
+      }
+
+      /* PRODUCT CARD */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .card:hover {
+        border-color: var(--orange);
+        transform: translateY(-3px);
+      }
+      .card-img {
+        width: 100%;
+        height: 175px;
+        overflow: hidden;
+        background: #111;
+      }
+      .card-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s;
+      }
+      .card:hover .card-img img {
+        transform: scale(1.04);
+      }
+      .card-body {
+        padding: 13px 13px 15px;
+      }
+      .card-id {
+        font-size: 0.52rem;
+        letter-spacing: 2px;
+        color: var(--orange);
+        margin-bottom: 3px;
+      }
+      .card-name {
+        font-family: "Bebas Neue";
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        color: var(--cream);
+        line-height: 1.1;
+        margin-bottom: 5px;
+      }
+      .card-desc {
+        font-size: 0.6rem;
+        color: var(--muted);
+        line-height: 1.7;
+        margin-bottom: 9px;
+      }
+      .card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px;
+        margin-bottom: 10px;
+      }
+      .tag {
+        background: var(--tag);
+        border: 1px solid var(--border);
+        font-size: 0.48rem;
+        color: var(--muted);
+        padding: 2px 6px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .price {
+        font-family: "Anton";
+        font-size: 1.25rem;
+        color: var(--orange);
+      }
+      .badge {
+        font-size: 0.48rem;
+        letter-spacing: 1px;
+        background: var(--orange);
+        color: #000;
+        padding: 2px 7px;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      /* DRINK CARDS */
+      .drink-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+      }
+      .drink-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .drink-card:hover {
+        border-color: var(--orange);
+        transform: translateY(-3px);
+      }
+      .drink-img {
+        width: 100%;
+        height: 220px;
+        overflow: hidden;
+      }
+      .drink-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+      }
+      .drink-card:hover .drink-img img {
+        transform: scale(1.04);
+      }
+      .drink-body {
+        padding: 12px;
+        text-align: center;
+      }
+      .drink-name {
+        font-family: "Bebas Neue";
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        color: var(--cream);
+        margin-bottom: 3px;
+      }
+      .drink-vol {
+        font-size: 0.55rem;
+        color: var(--muted);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .drink-price {
+        font-family: "Anton";
+        font-size: 1.2rem;
+        color: var(--orange);
+      }
+
+      /* COMBOS */
+      .combo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 18px;
+      }
+      .combo-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .combo-card:hover {
+        border-color: var(--orange);
+        transform: translateY(-3px);
+      }
+      .combo-img {
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+      }
+      .combo-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+      }
+      .combo-card:hover .combo-img img {
+        transform: scale(1.04);
+      }
+      .combo-body {
+        padding: 14px 16px 16px;
+        border-left: 4px solid var(--orange);
+      }
+      .combo-badge {
+        font-size: 0.5rem;
+        color: var(--orange);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .combo-name {
+        font-family: "Bebas Neue";
+        font-size: 1.3rem;
+        letter-spacing: 3px;
+        color: var(--cream);
+        margin-bottom: 8px;
+      }
+      .combo-items {
+        list-style: none;
+        margin-bottom: 14px;
+      }
+      .combo-items li {
+        font-size: 0.62rem;
+        color: var(--muted);
+        padding: 3px 0;
+        border-bottom: 1px dashed var(--border);
+      }
+      .combo-items li::before {
+        content: "+ ";
+        color: var(--orange);
+      }
+      .combo-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .combo-price {
+        font-family: "Anton";
+        font-size: 1.4rem;
+        color: var(--orange);
+      }
+      .combo-save {
+        font-size: 0.48rem;
+        background: var(--orange);
+        color: #000;
+        padding: 2px 7px;
+        font-weight: 700;
+      }
+
+      footer {
+        background: var(--surface);
+        border-top: 2px solid var(--orange);
+        padding: 28px;
+        text-align: center;
+      }
+      footer .ft {
+        font-family: "Bebas Neue";
+        font-size: 1.8rem;
+        color: var(--orange);
+        letter-spacing: 6px;
+      }
+      footer p {
+        font-size: 0.55rem;
+        color: var(--muted);
+        letter-spacing: 2px;
+        margin-top: 4px;
+      }
+      .ft-contacts {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+      .ft-contact a {
+        font-size: 0.68rem;
+        color: var(--muted);
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .ft-contact a span { color: var(--orange); font-weight: 600; }
+      .ft-contact a:active span { color: #fff; }
+
+      @media (max-width: 600px) {
+        header {
+          padding: 10px 14px;
+        }
+        .tabs {
+          top: 66px;
+        }
+        .section {
+          padding: 18px 12px 48px;
+        }
+        .grid {
+          grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <div class="logo-box"><span>M.O.B</span></div>
+        <div class="logo-text">
+          <div class="brand">M.O.B</div>
+          <div class="sub">Smash Burger</div>
+        </div>
+      </div>
+      <span class="header-tag">Cardápio</span>
+    </header>
+
+    <div class="hero">
+      <h1>SMASH <span>BURGERS</span></h1>
+      <p>Artesanal · Raiz · Direto ao ponto</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="burgers">
+        🍔 SMASH BURGERS
+      </button>
+      <button class="tab-btn" data-tab="chicken">🍗 CHICKEN</button>
+      <button class="tab-btn" data-tab="combos">⚡ COMBOS</button>
+      <button class="tab-btn" data-tab="bebidas">🥤 BEBIDAS</button>
+      <button class="tab-btn" data-tab="sobremesas">🍫 SOBREMESAS</button>
+    </div>
+
+    <!-- SMASH BURGERS -->
+    <div id="tab-burgers" class="section active">
+      <div class="sec-title">SMASH <span>BURGERS</span></div>
+      <div class="sec-sub">
+        14 criações · blend artesanal · pão brioche · molho especial da casa
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB CLASSIC" /></div>
+          <div class="card-body">
+            <div class="card-id">B-01</div>
+            <div class="card-name">MOB CLASSIC</div>
+            <div class="card-desc">
+              O clássico perfeito. Blend smashado, cheddar derretido e molho
+              especial da casa.
+            </div>
+            <div class="card-tags">
+              <span class="tag">blend</span><span class="tag">cheddar</span
+              ><span class="tag">molho especial</span>
+            </div>
+            <div class="card-footer">
+              <span class="price">R$ 28</span
+              ><span class="badge">BEST SELLER</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB BACON" /></div>
+          <div class="card-body">
+            <div class="card-id">B-02</div>
+            <div class="card-name">MOB BACON</div>
+            <div class="card-desc">
+              Smash com tiras crocantes de bacon defumado, cheddar e molho
+              especial.
+            </div>
+            <div class="card-tags">
+              <span class="tag">blend</span><span class="tag">bacon</span
+              ><span class="tag">cheddar</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 32</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB GODFATHER" /></div>
+          <div class="card-body">
+            <div class="card-id">B-03</div>
+            <div class="card-name">MOB GODFATHER</div>
+            <div class="card-desc">
+              Duplo blend, bacon, ovo frito, cheddar, mussarela e molho
+              especial. O mais completo.
+            </div>
+            <div class="card-tags">
+              <span class="tag">duplo</span><span class="tag">bacon</span
+              ><span class="tag">ovo</span><span class="tag">cheddar</span
+              ><span class="tag">mussarela</span>
+            </div>
+            <div class="card-footer">
+              <span class="price">R$ 38</span><span class="badge">PREMIUM</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB SUNRISE" /></div>
+          <div class="card-body">
+            <div class="card-id">B-04</div>
+            <div class="card-name">MOB SUNRISE</div>
+            <div class="card-desc">
+              Blend, ovo frito, presunto, mussarela e molho especial. Perfeito a
+              qualquer hora.
+            </div>
+            <div class="card-tags">
+              <span class="tag">blend</span><span class="tag">ovo</span
+              ><span class="tag">presunto</span
+              ><span class="tag">mussarela</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 33</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB CHAOS" /></div>
+          <div class="card-body">
+            <div class="card-id">B-05</div>
+            <div class="card-name">MOB CHAOS</div>
+            <div class="card-desc">
+              O caos organizado: bacon, ovo, cheddar, alface, tomate e molho.
+              Cada mordida diferente.
+            </div>
+            <div class="card-tags">
+              <span class="tag">bacon</span><span class="tag">ovo</span
+              ><span class="tag">cheddar</span><span class="tag">alface</span
+              ><span class="tag">tomate</span>
+            </div>
+            <div class="card-footer">
+              <span class="price">R$ 36</span
+              ><span class="badge">⚡ INTENSO</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB DELI" /></div>
+          <div class="card-body">
+            <div class="card-id">B-06</div>
+            <div class="card-name">MOB DELI</div>
+            <div class="card-desc">
+              Blend, presunto, mussarela, alface crocante, tomate e molho da
+              casa.
+            </div>
+            <div class="card-tags">
+              <span class="tag">presunto</span><span class="tag">mussarela</span
+              ><span class="tag">alface</span><span class="tag">tomate</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 31</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB ITALIAN" /></div>
+          <div class="card-body">
+            <div class="card-id">B-07</div>
+            <div class="card-name">MOB ITALIAN</div>
+            <div class="card-desc">
+              Blend, presunto, mussarela generosa derretida, cheddar e molho
+              especial.
+            </div>
+            <div class="card-tags">
+              <span class="tag">presunto</span><span class="tag">mussarela</span
+              ><span class="tag">cheddar</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 33</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB BRUNCH" /></div>
+          <div class="card-body">
+            <div class="card-id">B-08</div>
+            <div class="card-name">MOB BRUNCH</div>
+            <div class="card-desc">
+              Blend, ovo frito, presunto, cheddar e molho especial da casa.
+            </div>
+            <div class="card-tags">
+              <span class="tag">ovo</span><span class="tag">presunto</span
+              ><span class="tag">cheddar</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 32</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB KING" /></div>
+          <div class="card-body">
+            <div class="card-id">B-09</div>
+            <div class="card-name">MOB KING</div>
+            <div class="card-desc">
+              Blend, bacon, cheddar, alface, tomate e molho especial. O rei do
+              cardápio.
+            </div>
+            <div class="card-tags">
+              <span class="tag">bacon</span><span class="tag">cheddar</span
+              ><span class="tag">alface</span><span class="tag">tomate</span>
+            </div>
+            <div class="card-footer">
+              <span class="price">R$ 34</span><span class="badge">👑 KING</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB STREET" /></div>
+          <div class="card-body">
+            <div class="card-id">B-10</div>
+            <div class="card-name">MOB STREET</div>
+            <div class="card-desc">
+              Blend, cheddar, alface, tomate e molho especial. O clássico das
+              ruas.
+            </div>
+            <div class="card-tags">
+              <span class="tag">cheddar</span><span class="tag">alface</span
+              ><span class="tag">tomate</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 29</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB BEAST" /></div>
+          <div class="card-body">
+            <div class="card-id">B-11</div>
+            <div class="card-name">MOB BEAST</div>
+            <div class="card-desc">
+              Duplo blend, bacon, ovo, cheddar, mussarela, presunto, alface,
+              tomate e molho. O monstro.
+            </div>
+            <div class="card-tags">
+              <span class="tag">duplo</span><span class="tag">tudo</span>
+            </div>
+            <div class="card-footer">
+              <span class="price">R$ 45</span
+              ><span class="badge">⚡ BEAST</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB JOKER" /></div>
+          <div class="card-body">
+            <div class="card-id">B-12</div>
+            <div class="card-name">MOB JOKER</div>
+            <div class="card-desc">
+              Blend, bacon, mussarela derretida, alface e molho especial.
+              Imprevisível.
+            </div>
+            <div class="card-tags">
+              <span class="tag">bacon</span><span class="tag">mussarela</span
+              ><span class="tag">alface</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 31</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB ORIGINAL" /></div>
+          <div class="card-body">
+            <div class="card-id">B-13</div>
+            <div class="card-name">MOB ORIGINAL</div>
+            <div class="card-desc">
+              Simplismo elevado. Blend, bacon, cheddar, alface, tomate e molho
+              especial.
+            </div>
+            <div class="card-tags">
+              <span class="tag">blend</span><span class="tag">bacon</span
+              ><span class="tag">cheddar</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 26</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB FULL" /></div>
+          <div class="card-body">
+            <div class="card-id">B-14</div>
+            <div class="card-name">MOB FULL</div>
+            <div class="card-desc">
+              Duplo blend, bacon, ovo, presunto, cheddar, mussarela, alface,
+              tomate e molho. Tudo.
+            </div>
+            <div class="card-tags">
+              <span class="tag">duplo</span><span class="tag">completo</span>
+            </div>
+            <div class="card-footer">
+              <span class="price">R$ 48</span><span class="badge">🏆 FULL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHICKEN -->
+    <div id="tab-chicken" class="section">
+      <div class="sec-title">MOB <span>CHICKEN</span></div>
+      <div class="sec-sub">
+        4 opções · frango grelhado · pão brioche · molho especial
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB CHICKEN" /></div>
+          <div class="card-body">
+            <div class="card-id">C-01</div>
+            <div class="card-name">MOB CHICKEN</div>
+            <div class="card-desc">
+              Frango grelhado na chapa, mussarela, alface, tomate e molho
+              especial da casa.
+            </div>
+            <div class="card-tags">
+              <span class="tag">frango</span><span class="tag">mussarela</span
+              ><span class="tag">alface</span><span class="tag">tomate</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 27</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB CHICKEN BACON" /></div>
+          <div class="card-body">
+            <div class="card-id">C-02</div>
+            <div class="card-name">MOB CHICKEN BACON</div>
+            <div class="card-desc">
+              Frango grelhado com tiras de bacon, cheddar e alface. Combinação
+              poderosa.
+            </div>
+            <div class="card-tags">
+              <span class="tag">frango</span><span class="tag">bacon</span
+              ><span class="tag">cheddar</span><span class="tag">alface</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 32</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB CHICKEN SUNRISE" /></div>
+          <div class="card-body">
+            <div class="card-id">C-03</div>
+            <div class="card-name">MOB CHICKEN SUNRISE</div>
+            <div class="card-desc">
+              Frango grelhado com ovo frito, presunto, cheddar e molho especial.
+              O sol nasceu no pão.
+            </div>
+            <div class="card-tags">
+              <span class="tag">frango</span><span class="tag">ovo</span
+              ><span class="tag">presunto</span><span class="tag">cheddar</span>
+            </div>
+            <div class="card-footer"><span class="price">R$ 31</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-img"><img src="" alt="MOB CHICKEN FULL" /></div>
+          <div class="card-body">
+            <div class="card-id">C-04</div>
+            <div class="card-name">MOB CHICKEN FULL</div>
+            <div class="card-desc">
+              Frango grelhado, bacon, ovo, presunto, cheddar, alface, tomate e
+              molho especial. Tudo no frango.
+            </div>
+            <div class="card-tags">
+              <span class="tag">frango</span><span class="tag">bacon</span
+              ><span class="tag">ovo</span><span class="tag">tudo</span>
+            </div>
+            <div class="card-footer">
+              <span class="price">R$ 40</span><span class="badge">FULL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMBOS -->
+    <div id="tab-combos" class="section">
+      <div class="sec-title">MOB <span>COMBOS</span></div>
+      <div class="sec-sub">
+        5 combos · mais por menos · o melhor custo-benefício
+      </div>
+      <div class="combo-grid">
+        <div class="combo-card">
+          <div class="combo-img">
+            <img
+              src="/burgers/combo-mob-combo-classico.jpg"
+              alt="MOB COMBO CLÁSSICO"
+            />
+          </div>
+          <div class="combo-body">
+            <div class="combo-badge">COMBO · K-01</div>
+            <div class="combo-name">MOB COMBO CLÁSSICO</div>
+            <ul class="combo-items">
+              <li>MOB CLASSIC (B-01)</li>
+              <li>1 Bebida lata</li>
+            </ul>
+            <div class="combo-footer">
+              <span class="combo-price">R$ 38</span
+              ><span class="combo-save">ECONOMIA R$3</span>
+            </div>
+          </div>
+        </div>
+        <div class="combo-card">
+          <div class="combo-img">
+            <img
+              src="/burgers/combo-mob-combo-premium.jpg"
+              alt="MOB COMBO PREMIUM"
+            />
+          </div>
+          <div class="combo-body">
+            <div class="combo-badge">COMBO · K-02</div>
+            <div class="combo-name">MOB COMBO PREMIUM</div>
+            <ul class="combo-items">
+              <li>Qualquer burger (B-01 a B-12)</li>
+              <li>1 Bebida lata</li>
+              <li>1 Sobremesa</li>
+            </ul>
+            <div class="combo-footer">
+              <span class="combo-price">A partir R$ 55</span
+              ><span class="combo-save">ECONOMIA R$5</span>
+            </div>
+          </div>
+        </div>
+        <div class="combo-card">
+          <div class="combo-img">
+            <img
+              src="/burgers/combo-mob-combo-sweet.jpg"
+              alt="MOB COMBO SWEET"
+            />
+          </div>
+          <div class="combo-body">
+            <div class="combo-badge">COMBO · K-03</div>
+            <div class="combo-name">MOB COMBO SWEET</div>
+            <ul class="combo-items">
+              <li>MOB ORIGINAL (B-13)</li>
+              <li>1 Bebida lata</li>
+              <li>1 Cookie</li>
+            </ul>
+            <div class="combo-footer">
+              <span class="combo-price">R$ 44</span
+              ><span class="combo-save">ECONOMIA R$4</span>
+            </div>
+          </div>
+        </div>
+        <div class="combo-card">
+          <div class="combo-img">
+            <img src="/burgers/combo-mob-para-2.jpg" alt="MOB PARA 2" />
+          </div>
+          <div class="combo-body">
+            <div class="combo-badge">COMBO · K-04</div>
+            <div class="combo-name">MOB PARA 2</div>
+            <ul class="combo-items">
+              <li>2 Burgers à escolha</li>
+              <li>2 Bebidas lata</li>
+              <li>1 Sobremesa compartilhada</li>
+            </ul>
+            <div class="combo-footer">
+              <span class="combo-price">A partir R$ 78</span
+              ><span class="combo-save">ECONOMIA R$8</span>
+            </div>
+          </div>
+        </div>
+        <div class="combo-card">
+          <div class="combo-img">
+            <img src="/burgers/combo-mob-familia.jpg" alt="MOB FAMÍLIA" />
+          </div>
+          <div class="combo-body">
+            <div class="combo-badge">COMBO · K-05</div>
+            <div class="combo-name">MOB FAMÍLIA</div>
+            <ul class="combo-items">
+              <li>4 Burgers à escolha</li>
+              <li>4 Bebidas lata</li>
+              <li>2 Sobremesas</li>
+            </ul>
+            <div class="combo-footer">
+              <span class="combo-price">A partir R$ 148</span
+              ><span class="combo-save">ECONOMIA R$18</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BEBIDAS -->
+    <div id="tab-bebidas" class="section">
+      <div class="sec-title">MOB <span>BEBIDAS</span></div>
+      <div class="sec-sub">4 opções · lata gelada · sempre</div>
+      <div class="drink-grid">
+        <div class="drink-card">
+          <div class="drink-img"><img src="" alt="Coca-Cola" /></div>
+          <div class="drink-body">
+            <div class="drink-name">COCA-COLA</div>
+            <div class="drink-vol">Lata 350ml</div>
+            <div class="drink-price">R$ 7</div>
+          </div>
+        </div>
+        <div class="drink-card">
+          <div class="drink-img"><img src="" alt="Coca-Cola Zero" /></div>
+          <div class="drink-body">
+            <div class="drink-name">COCA-COLA ZERO</div>
+            <div class="drink-vol">Lata 350ml</div>
+            <div class="drink-price">R$ 7</div>
+          </div>
+        </div>
+        <div class="drink-card">
+          <div class="drink-img"><img src="" alt="Guaraná" /></div>
+          <div class="drink-body">
+            <div class="drink-name">GUARANÁ</div>
+            <div class="drink-vol">Lata 350ml</div>
+            <div class="drink-price">R$ 6</div>
+          </div>
+        </div>
+        <div class="drink-card">
+          <div class="drink-img"><img src="" alt="Guaraná Zero" /></div>
+          <div class="drink-body">
+            <div class="drink-name">GUARANÁ ZERO</div>
+            <div class="drink-vol">Lata 350ml</div>
+            <div class="drink-price">R$ 6</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOBREMESAS -->
+    <div id="tab-sobremesas" class="section">
+      <div class="sec-title">MOB <span>SOBREMESAS</span></div>
+      <div class="sec-sub">4 tentações · feitas com amor · perigo total</div>
+      <div class="drink-grid">
+        <div class="drink-card">
+          <div class="drink-img">
+            <img src="" alt="MOB Bombom de Morango" />
+          </div>
+          <div class="drink-body">
+            <div class="drink-name">MOB BOMBOM DE MORANGO</div>
+            <div class="drink-vol">Bombom artesanal de morango</div>
+            <div class="drink-price">R$ 8</div>
+          </div>
+        </div>
+        <div class="drink-card">
+          <div class="drink-img"><img src="" alt="MOB Brownie" /></div>
+          <div class="drink-body">
+            <div class="drink-name">MOB BROWNIE</div>
+            <div class="drink-vol">
+              Ninho · Nutella · Bis · KitKat · Confete
+            </div>
+            <div class="drink-price">R$ 12</div>
+          </div>
+        </div>
+        <div class="drink-card">
+          <div class="drink-img"><img src="" alt="MOB Cookie" /></div>
+          <div class="drink-body">
+            <div class="drink-name">MOB COOKIE</div>
+            <div class="drink-vol">Cookie clássico artesanal</div>
+            <div class="drink-price">R$ 7</div>
+          </div>
+        </div>
+        <div class="drink-card">
+          <div class="drink-img"><img src="" alt="MOB Cookie Nutella" /></div>
+          <div class="drink-body">
+            <div class="drink-name">MOB COOKIE NUTELLA</div>
+            <div class="drink-vol">Cookie recheado com Nutella</div>
+            <div class="drink-price">R$ 10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="ft">M.O.B</div>
+      <p>SMASH BURGER · ARTESANAL · FEITO PRA VOCÊ</p>
+      <div class="ft-contacts">
+        <div class="ft-contact">
+          <a href="https://www.instagram.com/murilooriginalburger" target="_blank" rel="noopener">
+            📸 Instagram <span>@murilooriginalburger</span>
+          </a>
+        </div>
+        <div class="ft-contact">
+          <a href="https://wa.me/5535997209115" target="_blank" rel="noopener">
+            💬 WhatsApp <span>(35) 99720-9115</span>
+          </a>
+        </div>
+        <div class="ft-contact">
+          <a href="https://maps.google.com/?q=Lavras,MG" target="_blank" rel="noopener">
+            📍 Localização <span>Lavras, MG</span>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function showTab(id, btn) {
+        document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        document.getElementById("tab-" + id).classList.add("active");
+        btn.classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => showTab(btn.dataset.tab, btn));
+      });
+    </script>
+  </body>
+</html>

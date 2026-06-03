@@ -76,14 +76,20 @@ body {
 .lg-show { display: none !important; }
 @media (min-width: 1024px) { .lg-show { display: flex !important; justify-content: center; align-items: center; } }
 
-/* ─── Carrossel mobile — scroll snap nativo ──────────────────── */
-@media (max-width: 1023px) {
+/* ─── Carrossel desktop — GSAP pin precisa de overflow hidden ── */
+@media (min-width: 1280px) and (hover: hover) {
+  #cardápio { overflow: hidden; }
+}
+
+/* ─── Carrossel mobile/tablet/touch — scroll snap nativo ─────── */
+@media (max-width: 1279px), (hover: none) {
   #cardápio {
     overflow-x: auto !important;
     overflow-y: visible !important;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    height: 100svh;
   }
   #cardápio::-webkit-scrollbar { display: none; }
 
@@ -91,24 +97,25 @@ body {
   #cardápio > div {
     will-change: auto !important;
     transform: none !important;
+    height: 100%;
   }
 
-  /* cards: 85vw para mostrar peek do próximo */
+  /* phone: card ocupa 85vw, tablet: ~70vw para mostrar peek do próximo */
   .burger-card {
-    min-width: 85vw !important;
-    height: 80svh !important;
+    min-width: min(85vw, 560px) !important;
+    height: 100% !important;
     scroll-snap-align: start;
   }
 
-  /* title card menor no mobile */
+  /* title card */
   .carousel-title-card {
-    min-width: 80vw !important;
+    min-width: min(80vw, 480px) !important;
     scroll-snap-align: start;
   }
 
-  /* section label combos */
+  /* section label */
   .carousel-section-label {
-    min-width: 50vw !important;
+    min-width: min(40vw, 200px) !important;
     scroll-snap-align: start;
   }
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useLayoutEffect, useRef, useState } from 'react'
+import { forwardRef, useLayoutEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -9,92 +9,244 @@ import { BurgerModal, type BurgerDetail } from './burger-modal'
 gsap.registerPlugin(ScrollTrigger)
 
 /* ─── Menu data ──────────────────────────────────────────────── */
+
 const BURGERS: (BurgerDetail & { id: number; image: string })[] = [
   {
-    id: 1, name: 'MC Simples', tag: 'CLÁSSICO', price: 'R$ 22,90',
-    ingredients: ['Pão Brioche', 'Maionese artesanal', '2 fatias de queijo mussarela', '110g de hambúrguer bovino'],
+    id: 1, name: 'Mob Classic', tag: 'BEST SELLER', price: 'R$ 22,90',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Mussarela/Cheddar', 'Molho especial da casa'],
     bg: ['#3B1F05', '#1C0C02'], accent: '#FF8C2A',
-    image: '/burgers/mc-simples.jpg',
+    image: '/burgers/mob-classic.png',
   },
   {
-    id: 2, name: 'X Bacon', tag: '🔥 MAIS PEDIDO', price: 'R$ 28,90',
-    ingredients: ['Pão Brioche', '2 tiras de bacon crocante', '110g de hambúrguer bovino', '2 fatias de cheddar'],
+    id: 2, name: 'Mob Bacon', tag: 'CLÁSSICO', price: 'R$ 27,90',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Bacon defumado crocante em tiras', 'Dupla fatia mussarela/cheddar', 'Molho especial da casa'],
     bg: ['#3B0E05', '#1C0502'], accent: '#FF4500',
-    image: '/burgers/x-bacon.jpg',
+    image: '/burgers/mob-bacon.png',
   },
   {
-    id: 3, name: 'X Bacon Egg', tag: 'ESPECIAL', price: 'R$ 31,90',
-    ingredients: ['Pão Brioche', '2 tiras de bacon crocante', '110g de hambúrguer bovino', '2 fatias de cheddar', 'Ovo caipira'],
+    id: 3, name: 'Mob Godfather', tag: 'PREMIUM', price: 'R$ 39,90',
+    ingredients: ['Pão Brioche', 'Duplo blend 110g', 'Bacon defumado crocante em tiras', 'Ovo frito', 'Dupla fatia mussarela/cheddar', 'Molho especial'],
+    bg: ['#2A0000', '#110000'], accent: '#CC0000',
+    image: '/burgers/mob-godfather.png',
+  },
+  {
+    id: 4, name: 'Mob Sunrise', tag: 'ESPECIAL', price: 'R$ 26,90',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Ovo frito', 'Presunto', 'Mussarela/Cheddar', 'Molho especial'],
     bg: ['#38280A', '#1A1203'], accent: '#FFB020',
-    image: '/burgers/x-bacon-egg.jpg',
+    image: '/burgers/mob-sunrise.png',
   },
   {
-    id: 4, name: 'Duplo BBQ', tag: 'PREMIUM', price: 'R$ 39,90',
-    ingredients: ['Pão Brioche', 'Molho BBQ defumado', 'Cebola roxa caramelizada', '2 tiras de bacon', 'Queijo cheddar', '110g de hambúrguer bovino', 'Queijo cheddar', '110g de hambúrguer bovino'],
-    bg: ['#280F02', '#0F0601'], accent: '#CC3800',
-    image: '/burgers/duplo-bbq.jpg',
+    id: 5, name: 'Mob Duplo Bacon BBQ', tag: '🔥 DUPLO BBQ', price: 'R$ 37,90',
+    ingredients: ['Pão Brioche', 'Duplo blend 110g', 'Bacon defumado crocante em tiras', 'Duplo mussarela/cheddar', 'Molho BBQ'],
+    bg: ['#2E1500', '#140A00'], accent: '#FF6B35',
+    image: '/burgers/mob-chaos.png',
   },
   {
-    id: 5, name: 'MC Salad', tag: 'LEVE', price: 'R$ 26,90',
-    ingredients: ['Pão Brioche', 'Molho especial da casa', 'Queijo mussarela', 'Alface americana', 'Tomate fresco', 'Cebola', '110g de hambúrguer bovino'],
+    id: 6, name: 'Mob Salad', tag: 'LEVE', price: 'R$ 26,90',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Duplo mussarela/cheddar', 'Alface', 'Tomate', 'Molho da casa'],
     bg: ['#0E2808', '#060F03'], accent: '#4CAF50',
-    image: '/burgers/mc-salad.jpg',
+    image: '/burgers/mob-deli.png',
   },
   {
-    id: 6, name: 'Frango Simples', tag: 'FRANGO', price: 'R$ 23,90',
-    ingredients: ['Pão Brioche', '2 fatias de queijo mussarela', 'Filé de frango grelhado'],
-    bg: ['#2A2008', '#120E03'], accent: '#F0A020',
-    image: '/burgers/frango-simples.jpg',
+    id: 7, name: 'Mob Italian', tag: 'ITALIANO', price: 'R$ 27,90',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Mussarela/Cheddar', 'Presunto', 'Molho especial'],
+    bg: ['#2A1A00', '#120C00'], accent: '#D4A520',
+    image: '/burgers/mob-italian.png',
   },
   {
-    id: 7, name: 'Frango Bacon', tag: 'FRANGO', price: 'R$ 29,90',
-    ingredients: ['Pão Brioche', '2 fatias de queijo cheddar', 'Alface americana', 'Tomate fresco', 'Cebola', 'Filé de frango grelhado', 'Bacon crocante'],
-    bg: ['#2A1205', '#120802'], accent: '#E05010',
-    image: '/burgers/frango-bacon.jpg',
+    id: 8, name: 'Mob Brunch', tag: 'BRUNCH', price: 'R$ 29,90',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Ovo frito', 'Presunto', 'Duplo mussarela/cheddar', 'Molho especial'],
+    bg: ['#2A2008', '#120E03'], accent: '#F0C040',
+    image: '/burgers/mob-brunch.png',
   },
   {
-    id: 8, name: 'Frango Empanado', tag: '🍗 CROCANTE', price: 'R$ 27,90',
-    ingredients: ['Pão Brioche', 'Filé de frango empanado e frito', 'Queijo mussarela ou cheddar', 'Alface americana', 'Tomate fresco', 'Molho da casa'],
-    bg: ['#1E1600', '#0E0A00'], accent: '#D4900A',
-    image: '/burgers/frango-empanado.jpg',
+    id: 9, name: 'Mob King', tag: '👑 KING', price: 'R$ 39,90',
+    ingredients: ['Pão Brioche', 'Duplo blend 110g', 'Ovo frito', 'Bacon defumado crocante em tiras', 'Dupla fatia mussarela/cheddar', 'Molho especial', 'Alface'],
+    bg: ['#1A1200', '#0A0800'], accent: '#D4AF37',
+    image: '/burgers/mob-king.png',
+  },
+  {
+    id: 10, name: 'Mob Street', tag: 'STREET', price: 'R$ 24,90',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Mussarela/Cheddar', 'Alface', 'Tomate', 'Molho especial'],
+    bg: ['#2A1005', '#120700'], accent: '#FF7F50',
+    image: '/burgers/mob-street.png',
+  },
+  {
+    id: 11, name: 'Mob Beast', tag: '⚡ BEAST', price: 'R$ 44,90',
+    ingredients: ['Pão Brioche', 'Duplo blend 110g', 'Bacon defumado crocante em tiras', 'Ovo frito', 'Dupla fatia mussarela/cheddar', 'Presunto', 'Alface', 'Tomate', 'Molho especial'],
+    bg: ['#1A0000', '#0A0000'], accent: '#8B0000',
+    image: '/burgers/mob-beast.png',
+  },
+  {
+    id: 12, name: 'Mob Joker', tag: 'IMPREVISÍVEL', price: 'R$ 27,90',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Bacon defumado crocante em tiras', 'Mussarela/Cheddar', 'Alface', 'Molho especial'],
+    bg: ['#1A0828', '#0A0312'], accent: '#9B59B6',
+    image: '/burgers/mob-joker.png',
+  },
+  {
+    id: 13, name: 'Mob Original', tag: 'ORIGINAL', price: 'R$ 26,00',
+    ingredients: ['Pão Brioche', 'Blend bovino 110g', 'Bacon', 'Mussarela/Cheddar', 'Alface', 'Tomate', 'Molho especial'],
+    bg: ['#2A1805', '#120B02'], accent: '#E67E22',
+    image: '/burgers/mob-original.png',
+  },
+  {
+    id: 14, name: 'Mob Full', tag: '🏆 FULL', price: 'R$ 48,00',
+    ingredients: ['Pão Brioche', 'Duplo blend 110g', 'Bacon', 'Ovo frito', 'Presunto', 'Mussarela/Cheddar', 'Alface', 'Tomate', 'Molho especial'],
+    bg: ['#280000', '#0F0000'], accent: '#C0392B',
+    image: '/burgers/mob-full.png',
   },
 ]
 
-const COMBOS: (BurgerDetail & { id: string })[] = [
+const CHICKEN: (BurgerDetail & { id: string; image: string })[] = [
   {
-    id: 'c1', name: 'Combo Bacon', tag: 'COMBO', price: 'R$ 39,90',
-    ingredients: ['X Bacon', 'Batata frita pequena', 'Refri 200ml'],
-    bg: ['#2A0E05', '#110502'], accent: '#FF4500',
+    id: 'ch1', name: 'Mob Chicken', tag: 'FRANGO', price: 'R$ 27,00',
+    ingredients: ['Pão Brioche', 'Frango grelhado na chapa', 'Mussarela/Cheddar', 'Alface', 'Tomate', 'Molho especial'],
+    bg: ['#2A2008', '#120E03'], accent: '#F4D03F',
+    image: '/burgers/mob-chicken.png',
   },
   {
-    id: 'c2', name: 'Combo Frango', tag: 'COMBO', price: 'R$ 37,90',
-    ingredients: ['Frango Empanado', 'Batata frita pequena', 'Brownie'],
+    id: 'ch2', name: 'Mob Chicken Bacon', tag: 'FRANGO', price: 'R$ 32,00',
+    ingredients: ['Pão Brioche', 'Frango grelhado', 'Bacon crocante', 'Mussarela/Cheddar', 'Alface'],
+    bg: ['#2A1205', '#120802'], accent: '#E67E22',
+    image: '/burgers/mob-chicken-bacon.png',
+  },
+  {
+    id: 'ch3', name: 'Mob Chicken Sunrise', tag: 'FRANGO', price: 'R$ 31,00',
+    ingredients: ['Pão Brioche', 'Frango grelhado', 'Ovo frito', 'Presunto', 'Mussarela/Cheddar', 'Molho especial'],
+    bg: ['#2A1A00', '#120C00'], accent: '#F0A030',
+    image: '/burgers/mob-chicken-sunrise.png',
+  },
+  {
+    id: 'ch4', name: 'Mob Chicken Full', tag: 'FULL', price: 'R$ 40,00',
+    ingredients: ['Pão Brioche', 'Frango grelhado', 'Bacon', 'Ovo frito', 'Presunto', 'Mussarela/Cheddar', 'Alface', 'Tomate', 'Molho especial'],
     bg: ['#1E1600', '#0E0A00'], accent: '#D4900A',
-  },
-  {
-    id: 'c3', name: 'Par Perfeito', tag: '💑 DUO', price: 'R$ 59,90',
-    ingredients: ['2x MC Salad', 'Batata frita média', '2x Coca-Cola 200ml'],
-    bg: ['#0A1A24', '#030A10'], accent: '#2196F3',
+    image: '/burgers/mob-chicken-full.png',
   },
 ]
+
+const COMBOS: (BurgerDetail & { id: string; image: string; imageFit: 'cover' | 'contain' })[] = [
+  {
+    id: 'k0a', name: 'Combo Fritas', tag: 'COMBO', price: '+ R$ 9,90',
+    ingredients: ['Burger à escolha', 'Batata Frita 200g'],
+    bg: ['#2A1800', '#120C00'], accent: '#FFB300',
+    image: '/burgers/combo-mob-fritas.png', imageFit: 'cover',
+  },
+  {
+    id: 'k0b', name: 'Combo Completo', tag: 'COMBO', price: '+ R$ 14,00',
+    ingredients: ['Burger à escolha', 'Batata Frita 200g', 'Coca-Cola Lata 350ml'],
+    bg: ['#1A0A00', '#0A0500'], accent: '#FF6B00',
+    image: '/burgers/combo-mob-completo.png', imageFit: 'cover',
+  },
+  {
+    id: 'k1', name: 'Combo Clássico', tag: 'COMBO', price: 'R$ 38,00',
+    ingredients: ['Mob Classic', 'Bebida lata'],
+    bg: ['#2A0E05', '#110502'], accent: '#FF4500',
+    image: '/burgers/combo-mob-combo-classico.png', imageFit: 'contain',
+  },
+  {
+    id: 'k2', name: 'Combo Premium', tag: 'COMBO', price: 'A partir R$ 55',
+    ingredients: ['Qualquer burger (B-01 a B-12)', 'Bebida lata', '1 Sobremesa'],
+    bg: ['#1A0000', '#0A0000'], accent: '#CC0000',
+    image: '/burgers/combo-mob-combo-premium.png', imageFit: 'contain',
+  },
+  {
+    id: 'k3', name: 'Combo Sweet', tag: 'COMBO', price: 'R$ 44,00',
+    ingredients: ['Mob Original', 'Bebida lata', '1 Cookie'],
+    bg: ['#2A1800', '#120C00'], accent: '#E67E22',
+    image: '/burgers/combo-mob-combo-sweet.png', imageFit: 'contain',
+  },
+  {
+    id: 'k4', name: 'Mob Para 2', tag: '💑 DUO', price: 'A partir R$ 78',
+    ingredients: ['2 Burgers à escolha', '2 Bebidas lata', '1 Sobremesa compartilhada'],
+    bg: ['#0A1A24', '#030A10'], accent: '#2196F3',
+    image: '/burgers/combo-mob-para-2.png', imageFit: 'contain',
+  },
+  {
+    id: 'k5', name: 'Mob Família', tag: 'FAMÍLIA', price: 'A partir R$ 148',
+    ingredients: ['4 Burgers à escolha', '4 Bebidas lata', '2 Sobremesas'],
+    bg: ['#0A2410', '#030F08'], accent: '#4CAF50',
+    image: '/burgers/combo-mob-familia.png', imageFit: 'contain',
+  },
+]
+
+const PORCOES: (BurgerDetail & { id: string; image: string; imageFit: 'cover' | 'contain' })[] = [
+  {
+    id: 'p1', name: 'Batata Frita', tag: '🍟 PORÇÃO', price: 'R$ 11,90',
+    ingredients: ['Batata frita 200g', 'Crocante por fora', 'Macia por dentro'],
+    bg: ['#2A1E00', '#120E00'], accent: '#FFB300',
+    image: '/burgers/batata-frita.png', imageFit: 'contain',
+  },
+]
+
+const SOBREMESAS: (BurgerDetail & { id: string; image: string; imageFit: 'cover' | 'contain' })[] = [
+  {
+    id: 's1', name: 'Mob Bombom de Morango', tag: '🍓 SOBREMESA', price: 'R$ 8,00',
+    ingredients: ['Bombom artesanal de morango'],
+    bg: ['#280A15', '#100408'], accent: '#E91E63',
+    image: '/burgers/sobremesa-mob-bombom-de-morango.png', imageFit: 'contain',
+  },
+  {
+    id: 's2', name: 'Mob Brownie', tag: '🍫 SOBREMESA', price: 'R$ 12,00',
+    ingredients: ['Ninho', 'Nutella', 'Bis', 'KitKat', 'Confete'],
+    bg: ['#1A0800', '#0A0300'], accent: '#A0522D',
+    image: '/burgers/sobremesa-mob-brownie.png', imageFit: 'contain',
+  },
+  {
+    id: 's3', name: 'Mob Cookie', tag: '🍪 SOBREMESA', price: 'R$ 7,00',
+    ingredients: ['Cookie clássico artesanal'],
+    bg: ['#2A1600', '#120A00'], accent: '#CD853F',
+    image: '/burgers/sobremesa-mob-cookie.png', imageFit: 'contain',
+  },
+  {
+    id: 's4', name: 'Mob Cookie Nutella', tag: '🍪 SOBREMESA', price: 'R$ 10,00',
+    ingredients: ['Cookie artesanal', 'Recheado com Nutella'],
+    bg: ['#2A1000', '#120700'], accent: '#D2691E',
+    image: '/burgers/sobremesa-mob-cookie-nutella.png', imageFit: 'contain',
+  },
+]
+
+// All card items in order for ref tracking
+const ALL_CARDS = [
+  ...BURGERS.map((b) => ({ ...b, id: String(b.id) })),
+  ...CHICKEN,
+  ...COMBOS,
+  ...SOBREMESAS,
+  ...PORCOES,
+] as (BurgerDetail & { id: string; image?: string })[]
 
 /* ─── Card ───────────────────────────────────────────────────── */
-function Card({
-  burger,
-  onOpen,
-}: {
-  burger: BurgerDetail & { image?: string }
-  onOpen: (b: BurgerDetail) => void
-}) {
+const Card = forwardRef<
+  HTMLDivElement,
+  { burger: BurgerDetail & { image?: string; imageFit?: 'cover' | 'contain' }; onOpen: (b: BurgerDetail) => void }
+>(function Card({ burger, onOpen }, forwardedRef) {
   const [imgFailed, setImgFailed] = useState(false)
-  const cardRef = useRef<HTMLDivElement>(null)
+  const hoverRef  = useRef<HTMLDivElement>(null)
+  const panelRef  = useRef<HTMLDivElement>(null)
+  const isTouch   = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 
-  const handleEnter = () => { const el = cardRef.current?.querySelector('.c-inner'); if (el) gsap.to(el, { scale: 1.04, duration: 0.45, ease: 'power2.out' }) }
-  const handleLeave = () => { const el = cardRef.current?.querySelector('.c-inner'); if (el) gsap.to(el, { scale: 1,    duration: 0.45, ease: 'power2.out' }) }
+  const setRef = (el: HTMLDivElement | null) => {
+    (hoverRef as React.MutableRefObject<HTMLDivElement | null>).current = el
+    if (typeof forwardedRef === 'function') forwardedRef(el)
+    else if (forwardedRef)
+      (forwardedRef as React.MutableRefObject<HTMLDivElement | null>).current = el
+  }
+
+  const handleEnter = () => {
+    const inner = hoverRef.current?.querySelector('.c-inner')
+    if (inner) gsap.to(inner, { scale: 1.04, duration: 0.45, ease: 'power2.out' })
+    if (!isTouch && panelRef.current)
+      gsap.to(panelRef.current, { y: '0%', duration: 0.4, ease: 'power3.out' })
+  }
+  const handleLeave = () => {
+    const inner = hoverRef.current?.querySelector('.c-inner')
+    if (inner) gsap.to(inner, { scale: 1, duration: 0.45, ease: 'power2.out' })
+    if (!isTouch && panelRef.current)
+      gsap.to(panelRef.current, { y: '105%', duration: 0.35, ease: 'power2.in' })
+  }
 
   return (
     <div
-      ref={cardRef}
+      ref={setRef}
       className="burger-card"
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
@@ -115,11 +267,15 @@ function Card({
         flex: 1, position: 'relative', overflow: 'hidden',
         background: `linear-gradient(160deg, ${burger.bg[0]} 0%, ${burger.bg[1]} 100%)`,
       }}>
-        <div className="c-inner" style={{ position: 'absolute', inset: 0, transformOrigin: 'center' }}>
+        <div className="c-inner" style={{ position: 'absolute', inset: 0, transformOrigin: 'center', background: '#08070B' }}>
           {burger.image && !imgFailed && (
             <Image
               src={burger.image} alt={burger.name} fill sizes="340px"
-              style={{ objectFit: 'cover', objectPosition: 'center' }}
+              style={{
+                objectFit: 'contain',
+                objectPosition: 'center',
+                padding: burger.imageFit === 'contain' ? '1.25rem' : '0.5rem',
+              }}
               unoptimized onError={() => setImgFailed(true)}
             />
           )}
@@ -135,13 +291,10 @@ function Card({
                 position: 'absolute', inset: 0,
                 background: `linear-gradient(125deg, ${burger.accent}12 0%, transparent 50%, rgba(0,0,0,0.3) 100%)`,
               }} />
-              <div style={{
-                position: 'absolute', inset: 0,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span style={{ fontSize: 'clamp(4.5rem, 7vw, 7rem)', lineHeight: 1,
                   filter: `drop-shadow(0 0 24px ${burger.accent}80)`, opacity: 0.9 }}>
-                  {burger.name.includes('Frango') ? '🍗' : burger.tag.includes('COMBO') ? '🍟' : '🍔'}
+                  {burger.name.toLowerCase().includes('chicken') ? '🍗' : burger.tag.includes('COMBO') ? '🍟' : '🍔'}
                 </span>
               </div>
             </>
@@ -165,14 +318,74 @@ function Card({
           </span>
         </div>
 
-        {/* Click hint */}
+        {/* Tags flutuantes — 3 ingredientes principais, sempre visíveis */}
         <div style={{
-          position: 'absolute', bottom: '4.5rem', right: '1.25rem', zIndex: 4,
-          fontFamily: 'var(--font-body)', fontSize: '0.58rem',
-          letterSpacing: '0.12em', color: 'rgba(255,255,255,0.45)',
-          textTransform: 'uppercase',
+          position: 'absolute', bottom: '1.75rem',
+          left: '1rem', right: '1rem',
+          zIndex: 5, display: 'flex', flexWrap: 'wrap', gap: '0.3rem',
+          pointerEvents: 'none',
         }}>
-          Ver ingredientes ↑
+          {burger.ingredients.slice(0, 3).map((ing) => (
+            <span key={ing} style={{
+              fontFamily: 'var(--font-body)', fontSize: '0.5rem',
+              letterSpacing: '0.1em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.85)',
+              background: 'rgba(8,7,11,0.6)',
+              border: `1px solid ${burger.accent}55`,
+              padding: '0.2rem 0.55rem', borderRadius: '9999px',
+              backdropFilter: 'blur(6px)',
+              whiteSpace: 'nowrap',
+            }}>
+              {ing}
+            </span>
+          ))}
+          {burger.ingredients.length > 3 && (
+            <span style={{
+              fontFamily: 'var(--font-body)', fontSize: '0.5rem',
+              letterSpacing: '0.1em', textTransform: 'uppercase',
+              color: burger.accent,
+              background: 'rgba(8,7,11,0.6)',
+              border: `1px solid ${burger.accent}55`,
+              padding: '0.2rem 0.55rem', borderRadius: '9999px',
+              backdropFilter: 'blur(6px)',
+            }}>
+              +{burger.ingredients.length - 3}
+            </span>
+          )}
+        </div>
+
+        {/* Painel hover — lista completa, sobe no hover (desktop) */}
+        <div
+          ref={panelRef}
+          style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0,
+            zIndex: 6,
+            background: 'rgba(8,7,11,0.96)',
+            backdropFilter: 'blur(10px)',
+            borderTop: `2px solid ${burger.accent}60`,
+            padding: '1.1rem 1.25rem 1.4rem',
+            transform: 'translateY(105%)',
+          }}
+        >
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: '0.55rem',
+            letterSpacing: '0.2em', textTransform: 'uppercase',
+            color: burger.accent, marginBottom: '0.6rem',
+          }}>
+            Ingredientes
+          </p>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.28rem' }}>
+            {burger.ingredients.map((ing) => (
+              <li key={ing} style={{
+                fontFamily: 'var(--font-body)', fontSize: '0.72rem',
+                color: 'rgba(255,255,255,0.82)',
+                display: 'flex', alignItems: 'center', gap: '0.4rem',
+              }}>
+                <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: burger.accent, flexShrink: 0 }} />
+                {ing}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
@@ -187,8 +400,7 @@ function Card({
           <h3 style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(1.5rem, 2.2vw, 2rem)',
-            color: 'var(--mob-text)', letterSpacing: '0.02em',
-            lineHeight: 1,
+            color: 'var(--mob-text)', letterSpacing: '0.02em', lineHeight: 1,
           }}>
             {burger.name}
           </h3>
@@ -196,35 +408,30 @@ function Card({
             <span style={{
               fontFamily: 'var(--font-display)',
               fontSize: 'clamp(1.2rem, 1.8vw, 1.6rem)',
-              color: burger.accent,
-              lineHeight: 1,
-              flexShrink: 0,
+              color: burger.accent, lineHeight: 1, flexShrink: 0,
             }}>
               {burger.price}
             </span>
           )}
         </div>
-        <p style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.7rem',
-          color: 'var(--mob-muted)',
-        }}>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.7rem', color: 'var(--mob-muted)' }}>
           {burger.ingredients.length} ingredientes · toque para ver
         </p>
       </div>
     </div>
   )
-}
+})
 
 /* ─── Separator label ────────────────────────────────────────── */
-function SectionLabel({ label }: { label: string }) {
+function SectionLabel({ label, id }: { label: string; id?: string }) {
   return (
-    <div className="carousel-section-label" style={{
+    <div id={id} className="carousel-section-label" style={{
       minWidth: 'clamp(120px, 12vw, 180px)',
       height: '100vh',
       display: 'flex', flexShrink: 0,
       alignItems: 'center', justifyContent: 'center',
       borderRight: '1px solid var(--mob-border)',
-      background: 'var(--mob-black)',
+      background: 'transparent',
     }}>
       <p style={{
         fontFamily: 'var(--font-display)',
@@ -241,14 +448,18 @@ function SectionLabel({ label }: { label: string }) {
 
 /* ─── Main carousel ──────────────────────────────────────────── */
 export function BurgerCarousel() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const trackRef   = useRef<HTMLDivElement>(null)
-  const titleRef   = useRef<HTMLDivElement>(null)
-  const [selected, setSelected] = useState<BurgerDetail | null>(null)
+  const sectionRef   = useRef<HTMLElement>(null)
+  const trackRef     = useRef<HTMLDivElement>(null)
+  const titleRef     = useRef<HTMLDivElement>(null)
+  const cardRefs     = useRef<(HTMLDivElement | null)[]>([])
+  const activeIdxRef = useRef(0)
+  const [activeIdx, setActiveIdx]   = useState(0)
+  const [selected, setSelected]     = useState<BurgerDetail | null>(null)
 
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return
-    if (window.innerWidth < 1024) return  // mobile usa scroll nativo (CSS snap)
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    if (isTouch || window.innerWidth < 1280) return
 
     const ctx = gsap.context(() => {
       const track   = trackRef.current
@@ -262,6 +473,26 @@ export function BurgerCarousel() {
 
       const getDistance = () => track.scrollWidth - window.innerWidth
 
+      const updateActive = () => {
+        const currentX = gsap.getProperty(track, 'x') as number
+        const viewCenter = window.innerWidth / 2
+        let closestIdx = 0
+        let closestDist = Infinity
+        cardRefs.current.forEach((el, i) => {
+          if (!el) return
+          const cardCenter = el.offsetLeft + el.offsetWidth / 2 + currentX
+          const dist = Math.abs(cardCenter - viewCenter)
+          if (dist < closestDist) {
+            closestDist = dist
+            closestIdx = i
+          }
+        })
+        if (closestIdx !== activeIdxRef.current) {
+          activeIdxRef.current = closestIdx
+          setActiveIdx(closestIdx)
+        }
+      }
+
       gsap.to(track, {
         x: () => -getDistance(),
         ease: 'none',
@@ -270,6 +501,7 @@ export function BurgerCarousel() {
           pin: true, scrub: 0.8,
           invalidateOnRefresh: true,
           end: () => '+=' + getDistance(),
+          onUpdate: updateActive,
         },
       })
     }, sectionRef)
@@ -277,15 +509,64 @@ export function BurgerCarousel() {
     return () => ctx.revert()
   }, [])
 
+  const activeBg = ALL_CARDS[activeIdx]
+
   return (
     <>
       <section
         ref={sectionRef}
         id="cardápio"
-        style={{ background: 'var(--mob-surface)', overflow: 'hidden' }}
+        style={{ position: 'relative', background: 'var(--mob-black)' }}
       >
-        <div ref={trackRef} style={{ display: 'flex', alignItems: 'stretch', willChange: 'transform' }}>
+        {/* ─ Background image layer ─ */}
+        <div
+          aria-hidden
+          style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}
+        >
+          {ALL_CARDS.map((item, i) =>
+            item.image ? (
+              <div
+                key={`bg-${item.id}`}
+                style={{
+                  position: 'absolute', inset: 0,
+                  opacity: i === activeIdx ? 1 : 0,
+                  transition: 'opacity 0.75s ease',
+                }}
+              >
+                <Image
+                  src={item.image}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  style={{ objectFit: 'cover', filter: 'brightness(0.28) saturate(1.4)' }}
+                  unoptimized
+                  priority={i === 0}
+                />
+                {/* Accent gradient overlay */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: `linear-gradient(135deg, ${item.bg[0]}bb 0%, ${item.bg[1]}88 100%)`,
+                }} />
+              </div>
+            ) : null
+          )}
 
+          {/* Dark fallback for combo cards (no image) */}
+          {activeBg && !activeBg.image && (
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: `linear-gradient(135deg, ${activeBg.bg[0]} 0%, ${activeBg.bg[1]} 100%)`,
+              opacity: 0.6,
+              transition: 'opacity 0.75s ease',
+            }} />
+          )}
+        </div>
+
+        {/* ─ Scrollable track ─ */}
+        <div
+          ref={trackRef}
+          style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'stretch', willChange: 'transform' }}
+        >
           {/* Title card */}
           <div ref={titleRef} className="carousel-title-card" style={{
             minWidth: 'clamp(280px, 28vw, 420px)',
@@ -317,15 +598,58 @@ export function BurgerCarousel() {
             </p>
           </div>
 
-          {/* Burger cards */}
-          {BURGERS.map((b) => (
-            <Card key={b.id} burger={b} onOpen={setSelected} />
+          {/* Smash Burger cards */}
+          {BURGERS.map((b, i) => (
+            <Card
+              key={b.id}
+              ref={(el) => { cardRefs.current[i] = el }}
+              burger={b}
+              onOpen={setSelected}
+            />
+          ))}
+
+          {/* Chicken separator + cards */}
+          <SectionLabel label="CHICKEN" />
+          {CHICKEN.map((c, i) => (
+            <Card
+              key={c.id}
+              ref={(el) => { cardRefs.current[BURGERS.length + i] = el }}
+              burger={c}
+              onOpen={setSelected}
+            />
           ))}
 
           {/* Combos separator + cards */}
-          <SectionLabel label="COMBOS" />
-          {COMBOS.map((c) => (
-            <Card key={c.id} burger={c} onOpen={setSelected} />
+          <SectionLabel label="COMBOS" id="carousel-combos" />
+          {COMBOS.map((c, i) => (
+            <Card
+              key={c.id}
+              ref={(el) => { cardRefs.current[BURGERS.length + CHICKEN.length + i] = el }}
+              burger={c}
+              onOpen={setSelected}
+            />
+          ))}
+
+          {/* Sobremesas separator + cards */}
+          <SectionLabel label="SOBREMESAS" id="carousel-sobremesas" />
+          {SOBREMESAS.map((s, i) => (
+            <Card
+              key={s.id}
+              ref={(el) => { cardRefs.current[BURGERS.length + CHICKEN.length + COMBOS.length + i] = el }}
+              burger={s}
+              onOpen={setSelected}
+            />
+          ))}
+
+          {/* Porções separator + cards */}
+          <SectionLabel label="PORÇÕES" id="carousel-porcoes" />
+          {PORCOES.map((p, i) => (
+            <Card
+              key={p.id}
+              ref={(el) => { cardRefs.current[BURGERS.length + CHICKEN.length + COMBOS.length + SOBREMESAS.length + i] = el }}
+              burger={p}
+              onOpen={setSelected}
+            />
           ))}
 
           {/* End CTA */}
@@ -335,7 +659,7 @@ export function BurgerCarousel() {
             display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center',
             flexShrink: 0, padding: '3rem',
-            background: 'var(--mob-black)',
+            background: 'transparent',
             borderLeft: '1px solid var(--mob-border)',
             textAlign: 'center',
           }}>
@@ -357,26 +681,27 @@ export function BurgerCarousel() {
               ESCOLHEU?<br />
               <span style={{ color: 'var(--mob-fire)' }}>AGORA<br />PEDE.</span>
             </h3>
-            <a href="#pedido" style={{
-              fontFamily: 'var(--font-display)', fontSize: '1.1rem',
-              letterSpacing: '0.06em', background: 'var(--mob-fire)',
-              color: '#fff', padding: '0.85rem 2.2rem',
-              borderRadius: '9999px', display: 'inline-block',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.transform = 'scale(1.04)'
-              ;(e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(255,69,0,0.5)'
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.transform = 'scale(1)'
-              ;(e.currentTarget as HTMLElement).style.boxShadow = 'none'
-            }}
+            <a
+              href="#pedido"
+              style={{
+                fontFamily: 'var(--font-display)', fontSize: '1.1rem',
+                letterSpacing: '0.06em', background: 'var(--mob-fire)',
+                color: '#fff', padding: '0.85rem 2.2rem',
+                borderRadius: '9999px', display: 'inline-block',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'scale(1.04)'
+                ;(e.currentTarget as HTMLElement).style.boxShadow = '0 0 24px rgba(255,69,0,0.5)'
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.transform = 'scale(1)'
+                ;(e.currentTarget as HTMLElement).style.boxShadow = 'none'
+              }}
             >
               Fazer Pedido
             </a>
           </div>
-
         </div>
       </section>
 

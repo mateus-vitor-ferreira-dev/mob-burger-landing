@@ -109,17 +109,11 @@ export function Intro({ onComplete }: IntroProps) {
             justifyContent: 'center',
           }}
         >
-          <span style={{ color: 'var(--mob-fire)' }}>M</span>
-          <span style={{ opacity: 0.4 }}>·</span>
-          MURILO
-          <span style={{ opacity: 0.25, margin: '0 0.2rem' }}>|</span>
-          <span style={{ color: 'var(--mob-fire)' }}>O</span>
-          <span style={{ opacity: 0.4 }}>·</span>
-          ORIGINAL
-          <span style={{ opacity: 0.25, margin: '0 0.2rem' }}>|</span>
-          <span style={{ color: 'var(--mob-fire)' }}>B</span>
-          <span style={{ opacity: 0.4 }}>·</span>
-          BURGER
+          <span style={{ color: 'var(--mob-fire)' }}>Original&apos;s</span>
+          <span style={{ opacity: 0.25, margin: '0 0.4rem' }}>·</span>
+          Smash Burger
+          <span style={{ opacity: 0.25, margin: '0 0.4rem' }}>·</span>
+          Lavras/MG
         </p>
       </div>
     </div>

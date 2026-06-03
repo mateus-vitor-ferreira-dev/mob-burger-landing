@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { MagneticButton } from './magnetic-button'
+import { ScrambleText } from './scramble-text'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -97,7 +99,7 @@ export function CTA() {
               ref={line2Ref}
               style={{ fontSize: 'clamp(4.5rem, 14vw, 13rem)', color: 'var(--mob-fire)' }}
             >
-              FOME?
+              <ScrambleText text="FOME?" duration={0.65} delay={0.6} />
             </div>
           </div>
         </h2>
@@ -113,31 +115,30 @@ export function CTA() {
             margin: '2rem auto 3rem',
           }}
         >
-          Monte o seu pedido direto pelo site, pague por Pix ou cartão e receba na sua porta
-          em até 30 minutos. Sem intermediários, sem comissão.
+          Monte o seu pedido direto pelo site, pague por Pix, débito ou crédito à vista e receba
+          na sua porta em até 30 minutos. Sem intermediários, sem comissão.
         </p>
 
-        <a
-          ref={btnRef}
-          href="https://wa.me/5535997209115"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)',
-            letterSpacing: '0.08em',
-            background: 'var(--mob-fire)',
-            color: '#fff',
-            padding: 'clamp(0.9rem, 2vw, 1.2rem) clamp(2rem, 5vw, 3.5rem)',
-            borderRadius: '9999px',
-            display: 'inline-block',
-            transition: 'transform 0.2s',
-          }}
-          onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.transform = 'scale(1.04)')}
-          onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.transform = 'scale(1)')}
-        >
-          Fazer Pedido Agora
-        </a>
+        <MagneticButton radius={130} strength={0.42}>
+          <a
+            ref={btnRef}
+            href="https://wa.me/5535997209115"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)',
+              letterSpacing: '0.08em',
+              background: 'var(--mob-fire)',
+              color: '#fff',
+              padding: 'clamp(0.9rem, 2vw, 1.2rem) clamp(2rem, 5vw, 3.5rem)',
+              borderRadius: '9999px',
+              display: 'inline-block',
+            }}
+          >
+            Fazer Pedido Agora
+          </a>
+        </MagneticButton>
 
         {/* Social proof */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', marginTop: '2.5rem', flexWrap: 'wrap' }}>

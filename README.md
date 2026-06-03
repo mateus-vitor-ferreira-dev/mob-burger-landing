@@ -1,21 +1,21 @@
-# Mob Burger — Landing Page
+# M.O.B Burger — Landing Page
 
-Landing page da hamburgueria **Mob Burger** (Lavras/MG), desenvolvida pela **Codexa**.
+Landing page da hamburgueria M.O.B (Lavras/MG), desenvolvida pela **Codexa**.
+
+**Produção:** `https://mob-burger-landing.vercel.app`
 
 ## Stack
 
-- Next.js 16 (App Router) + React 19 + TypeScript
-- Tailwind CSS v4 + shadcn/ui
+| Camada | Tecnologia |
+|---|---|
+| Framework | Next.js 16 (App Router) + React 19 |
+| Estilo | Tailwind CSS v4 |
+| Animações | GSAP 3 |
+| Hosting | Vercel (auto-deploy) |
 
-## Rodando localmente
+## Rodar localmente
 
 ```bash
 npm install
-npm run dev
+npm run dev    # http://localhost:3000
 ```
-
-Acesse [http://localhost:3000](http://localhost:3000).
-
----
-
-Desenvolvido por **Codexa** — [github.com/mateus-vitor-ferreira-dev](https://github.com/mateus-vitor-ferreira-dev)
