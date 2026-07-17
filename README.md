@@ -107,14 +107,77 @@ Toda decisão visual serve a isso: fundo quase preto para a comida ser a única 
 
 ## 🚀 Rodando localmente
 
+### Pré-requisitos
+
+| Requisito | Versão | De onde vem |
+|---|---|---|
+| **Node.js** | `>= 20.9.0` | piso declarado pelo `next@16.2.6` (campo `engines`) — o `eslint@9` pede `^18.18 \|\| ^20.9 \|\| >=21.1`, então **20.9+ satisfaz os dois** |
+| **npm** | o que acompanha o Node | `package-lock.json` é lockfile v3 |
+
+Só isso. Sem banco, sem Docker, sem conta em serviço externo — a landing não fala com backend nenhum: os CTAs abrem `wa.me` e Instagram direto no navegador.
+
+> O repo não fixa versão (`.nvmrc` e `engines` não existem aqui), então o piso acima é o do próprio Next. Qualquer Node 20.9+ / 22 LTS serve.
+
+### Passo a passo
+
 ```bash
+# 1. clone e entre no projeto
 git clone https://github.com/mateus-vitor-ferreira-dev/mob-burger-landing.git
 cd mob-burger-landing
-npm install
-npm run dev    # http://localhost:3000
+
+# 2. confira o Node (precisa ser >= 20.9.0)
+node -v
+
+# 3. instale as dependências
+npm install          # ou `npm ci` para respeitar o lockfile à risca
+
+# 4. suba o dev server
+npm run dev          # http://localhost:3000
 ```
 
-Sem variáveis de ambiente — a landing é estática por natureza.
+Não há passo 5. Sem migration, sem seed, sem `.env` para preencher — o `npm run dev` já entrega a landing pronta.
+
+### Variáveis de ambiente
+
+**A landing não depende de variáveis de ambiente.** Não existe `.env.example` no repo porque não há o que exemplificar: nenhum `process.env.*` nem `NEXT_PUBLIC_*` é lido em `src/`. Telefone do WhatsApp, handle do Instagram e cardápio são valores literais no código.
+
+> Se um dia alguma entrar: `.env*` já está no `.gitignore`. Nunca commite.
+
+### Endpoints locais
+
+| O quê | URL |
+|---|---|
+| Landing | `http://localhost:3000` |
+| Cardápio completo (HTML estático em `public/`, abre em nova aba pelo botão **Ver Cardápio** do hero) | `http://localhost:3000/cardapio.html` |
+
+Porta padrão do `next dev` — o script não passa `-p`.
+
+### Como verificar que subiu
+
+Abra `http://localhost:3000`. A ordem correta é: **splash com o logo abrindo em cortina** → hero com **MURILO / ORIGINAL'S / BURGER** em gradiente de chama → cursor customizado seguindo o mouse. Role até o carrossel: clicar num burger abre o modal com foto e ingredientes.
+
+Se o hero aparecer sem o gradiente ou com fonte serifada de fallback, as fontes não carregaram — veja abaixo.
+
+### Problemas comuns
+
+**Build/dev falhando ou fonte errada sem internet.** `next/font/google` baixa Bebas Neue e DM Sans **em tempo de build**, não no navegador do visitante. Primeira execução atrás de proxy restritivo ou offline quebra o build ou cai no fallback do sistema. Depois de baixado, fica em cache — e em produção nenhuma request vai para o Google.
+
+**Porta 3000 ocupada.** Comum se o web app do projeto já estiver rodando:
+
+```bash
+npm run dev -- -p 3001
+```
+
+### Scripts
+
+| Script | O que faz |
+|---|---|
+| `npm run dev` | Dev server com hot-reload em `http://localhost:3000` |
+| `npm run build` | Build de produção |
+| `npm start` | Serve o build de produção em `http://localhost:3000` — exige um `npm run build` antes |
+| `npm run lint` | ESLint com `core-web-vitals` + regras de TypeScript do `eslint-config-next` |
+
+Não há script de testes nem de typecheck neste repo — a checagem de tipos acontece no `build`.
 
 ---
 
