@@ -5,8 +5,8 @@
 <p><strong>Vitrine de marca para uma hamburgueria artesanal — feita para virar pedido</strong></p>
 
 <p>
-  <a href="https://mob-burger-landing.vercel.app" target="_blank">
-    <img src="https://img.shields.io/badge/Ver_ao_vivo-mob--burger--landing.vercel.app-FF4500?style=for-the-badge&logo=vercel&logoColor=white" alt="Demo ao vivo"/>
+  <a href="https://mob-burger-landing.desenvolvedoracodexa.workers.dev" target="_blank">
+    <img src="https://img.shields.io/badge/Ver_ao_vivo-mob--burger--landing.desenvolvedoracodexa.workers.dev-FF4500?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Demo ao vivo"/>
   </a>
 </p>
 
@@ -84,7 +84,7 @@ Toda decisão visual serve a isso: fundo quase preto para a comida ser a única 
     </tr>
     <tr>
       <td><strong>Deploy</strong></td>
-      <td><img src="https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white"/> — auto-deploy a cada push em <code>main</code></td>
+      <td><img src="https://img.shields.io/badge/Cloudflare_Workers-F38020?style=flat-square&logo=cloudflare&logoColor=white"/> — site estático, auto-deploy a cada push em <code>main</code></td>
     </tr>
   </tbody>
 </table>
