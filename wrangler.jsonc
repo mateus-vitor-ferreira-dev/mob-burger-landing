@@ -1,0 +1,14 @@
+// Publicação no Cloudflare Workers, no lugar da Vercel. A landing é estática (next build
+// com output: "export" gera out/), então não há código de Worker: só os arquivos.
+// Workers Builds: build "npm run build", deploy "npx wrangler deploy".
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mob-burger-landing",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  },
+  // Cada branch ganha um link próprio de preview, como na Vercel
+  "preview_urls": true
+}
