@@ -1,5 +1,22 @@
 import Image from 'next/image'
 
+const FOOTER_LINKS = [
+  { label: 'Cardápio',     href: '#cardápio' },
+  { label: 'Sobre',        href: '#sobre' },
+  { label: 'Como Pedir',   href: '#como-pedir' },
+  { label: 'Fazer Pedido', href: '#pedido' },
+]
+
+const footerHeading: React.CSSProperties = {
+  fontFamily: 'var(--font-body)',
+  fontSize: '0.72rem',
+  fontWeight: 400,
+  letterSpacing: '0.2em',
+  color: 'var(--mob-fire)',
+  textTransform: 'uppercase',
+  marginBottom: '1rem',
+}
+
 export function Footer() {
   return (
     <footer
@@ -9,11 +26,11 @@ export function Footer() {
         padding: 'clamp(2.5rem, 5vw, 4rem) 0',
       }}
     >
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(2rem, 6vw, 6rem)' }}>
+      <div className="mob-container">
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))',
             gap: 'clamp(2rem, 4vw, 3rem)',
             marginBottom: '3rem',
           }}
@@ -21,26 +38,26 @@ export function Footer() {
           {/* Brand */}
           <div>
             <Image
-              src="/mob-logo.png"
+              src="/mob-logo.webp"
               alt="M.O.B Burger"
               width={120}
               height={120}
               style={{ width: 'clamp(80px, 10vw, 120px)', height: 'auto', marginBottom: '0.75rem' }}
             />
             <p style={{
-              fontFamily: 'var(--font-body)', fontSize: '0.62rem',
+              fontFamily: 'var(--font-body)', fontSize: '0.72rem',
               letterSpacing: '0.15em', color: 'var(--mob-fire)',
               textTransform: 'uppercase', marginBottom: '0.4rem',
             }}>
-              Original's
+              Original&apos;s
             </p>
             <p
               style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: '0.8rem',
+                fontSize: '0.9rem',
                 color: 'var(--mob-muted)',
                 lineHeight: 1.6,
-                maxWidth: '220px',
+                maxWidth: '240px',
               }}
             >
               Felicidade tem cheiro de hambúrguer na chapa.
@@ -48,49 +65,35 @@ export function Footer() {
           </div>
 
           {/* Links */}
-          <div>
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.65rem',
-              letterSpacing: '0.2em',
-              color: 'var(--mob-fire)',
-              textTransform: 'uppercase',
-              marginBottom: '1rem',
-            }}>
+          <nav aria-labelledby="footer-nav-title">
+            <h2 id="footer-nav-title" style={footerHeading}>
               Navegação
-            </p>
-            {['Cardápio', 'Sobre', 'Combos', 'Fazer Pedido'].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                style={{
-                  display: 'block',
-                  fontFamily: 'var(--font-body)',
-                  fontSize: '0.85rem',
-                  color: 'var(--mob-muted)',
-                  marginBottom: '0.5rem',
-                  transition: 'color 0.2s',
-                }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = 'var(--mob-text)')}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = 'var(--mob-muted)')}
-              >
-                {item}
-              </a>
-            ))}
-          </div>
+            </h2>
+            <ul style={{ listStyle: 'none' }}>
+              {FOOTER_LINKS.map(({ label, href }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    className="text-link"
+                    style={{
+                      display: 'inline-block',
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '0.95rem',
+                      padding: '0.3rem 0',
+                    }}
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           {/* Contact */}
           <div>
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.65rem',
-              letterSpacing: '0.2em',
-              color: 'var(--mob-fire)',
-              textTransform: 'uppercase',
-              marginBottom: '1rem',
-            }}>
+            <h2 style={footerHeading}>
               Contato
-            </p>
+            </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {[
                 { label: 'Instagram',   value: '@murilooriginalburger', href: 'https://www.instagram.com/murilooriginalburger?igsh=MWkxczJzbGp4MnY3Mg==' },
@@ -98,7 +101,7 @@ export function Footer() {
                 { label: 'Localização', value: 'Lavras, MG',            href: undefined },
               ].map(({ label, value, href }) => (
                 <div key={label}>
-                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.65rem', color: 'var(--mob-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--mob-muted)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                     {label}
                   </p>
                   {href ? (
@@ -106,14 +109,13 @@ export function Footer() {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'var(--mob-text)', transition: 'color 0.2s' }}
-                      onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--mob-fire)')}
-                      onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = 'var(--mob-text)')}
+                      className="footer-contact-link"
+                      style={{ display: 'inline-block', fontFamily: 'var(--font-body)', fontSize: '0.95rem', padding: '0.15rem 0' }}
                     >
                       {value}
                     </a>
                   ) : (
-                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.85rem', color: 'var(--mob-text)' }}>
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.95rem', color: 'var(--mob-text)' }}>
                       {value}
                     </p>
                   )}
@@ -124,23 +126,16 @@ export function Footer() {
 
           {/* Hours */}
           <div>
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.65rem',
-              letterSpacing: '0.2em',
-              color: 'var(--mob-fire)',
-              textTransform: 'uppercase',
-              marginBottom: '1rem',
-            }}>
+            <h2 style={footerHeading}>
               Horário
-            </p>
+            </h2>
             {[
               { day: 'Seg – Qua', time: '18h30 – 22h30' },
               { day: 'Qui – Dom', time: '18h30 – 23h' },
             ].map(({ day, time }) => (
-              <div key={day} className="flex justify-between gap-4 mb-1.5" style={{ maxWidth: '180px' }}>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--mob-muted)' }}>{day}</p>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--mob-text)' }}>{time}</p>
+              <div key={day} className="flex justify-between gap-4 mb-1.5" style={{ maxWidth: '220px' }}>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--mob-muted)' }}>{day}</p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--mob-text)' }}>{time}</p>
               </div>
             ))}
           </div>
@@ -158,10 +153,10 @@ export function Footer() {
             alignItems: 'center',
           }}
         >
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--mob-muted)' }}>
-            © 2025 Original's — Todos os direitos reservados
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--mob-muted)' }}>
+            {`© ${new Date().getFullYear()} Original's — Todos os direitos reservados`}
           </p>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.72rem', color: 'var(--mob-muted)' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--mob-muted)' }}>
             Desenvolvido por{' '}
             <span style={{ color: 'var(--mob-fire)' }}>Codexa</span>
           </p>

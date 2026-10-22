@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Intro } from './intro'
 import { Header } from './header'
 import { Hero } from './hero'
@@ -19,14 +19,17 @@ import { FloatingWhatsApp } from './floating-whatsapp'
 
 export function LandingPage() {
   const [ready, setReady] = useState(false)
+  // Callback estável: com uma arrow inline o efeito da Intro rodava de novo após o
+  // setReady e travava o scroll do body por mais uma intro inteira (invisível)
+  const handleIntroComplete = useCallback(() => setReady(true), [])
 
   return (
     <>
       <CustomCursor />
       <FloatingWhatsApp />
-      <Intro onComplete={() => setReady(true)} />
+      <Intro onComplete={handleIntroComplete} />
       <Header ready={ready} />
-      <main style={{ background: 'var(--mob-black)' }}>
+      <main id="conteudo" tabIndex={-1} style={{ background: 'var(--mob-black)', outline: 'none' }}>
         <Hero ready={ready} />
         <MarqueeStrip />
         <BurgerCarousel />

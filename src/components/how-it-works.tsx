@@ -3,25 +3,27 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Bike, Hamburger, MessageCircle } from 'lucide-react'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const STEPS = [
   {
     num: '01',
-    icon: '🍔',
+    icon: Hamburger,
     title: 'Escolha',
     desc: 'Explore o cardápio e monte seu pedido — são 18 smash burgers, 4 frango, 5 combos e sobremesas artesanais.',
   },
   {
     num: '02',
-    icon: '💬',
+    icon: MessageCircle,
     title: 'Peça',
     desc: 'Envie seu pedido direto pelo WhatsApp. Sem cadastro, sem app de terceiros, sem comissão.',
   },
   {
     num: '03',
-    icon: '🛵',
+    icon: Bike,
     title: 'Receba',
     desc: 'Seu lanche sai da chapa e chega na sua porta em 40–60 minutos. Quentinho, fresquinho, do jeito certo.',
   },
@@ -31,6 +33,7 @@ export function HowItWorks() {
   const sectionRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
+    if (prefersReducedMotion()) return
     const ctx = gsap.context(() => {
       gsap.from('.hiw-step', {
         opacity: 0, y: 50, stagger: 0.2, duration: 0.7, ease: 'power2.out',
@@ -56,56 +59,43 @@ export function HowItWorks() {
         padding: 'clamp(4rem, 8vw, 7rem) 0',
       }}
     >
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 clamp(2rem, 6vw, 6rem)' }}>
+      <div className="mob-container">
 
         {/* Label */}
-        <div className="hiw-title" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem' }}>
-          <span style={{
-            fontFamily: 'var(--font-body)', fontSize: '0.7rem',
-            letterSpacing: '0.25em', color: 'var(--mob-fire)', textTransform: 'uppercase',
-          }}>
-            Como pedir
-          </span>
-          <div style={{ flex: 1, height: '1px', background: 'var(--mob-border)' }} />
+        <div className="hiw-title" style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: 'clamp(2rem, 5vw, 4rem)' }}>
+          <h2 className="eyebrow">Como pedir</h2>
+          <div aria-hidden style={{ flex: 1, height: '1px', background: 'var(--mob-border)' }} />
         </div>
 
-        <div style={{
+        <ol style={{
+          listStyle: 'none',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: 'clamp(1rem, 3vw, 2rem)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))',
+          gap: 'clamp(2.5rem, 4vw, 2rem)',
           alignItems: 'start',
         }}>
-          {STEPS.map((step, i) => (
-            <div
+          {STEPS.map((step) => (
+            <li
               key={step.num}
               className="hiw-step"
               style={{ position: 'relative' }}
             >
-              {/* Connector line */}
-              {i < STEPS.length - 1 && (
-                <div style={{
-                  display: 'none',
-                  position: 'absolute',
-                  top: '2.75rem', right: '-1rem',
-                  width: '2rem', height: '1px',
-                  background: 'var(--mob-border)',
-                }} />
-              )}
-
-              {/* Step number */}
-              <p style={{
+              {/* Step number + ícone na mesma linha */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+              <p aria-hidden style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(3.5rem, 6vw, 5rem)',
                 color: 'var(--mob-fire)',
-                opacity: 0.15,
+                opacity: 0.3,
                 lineHeight: 1,
-                marginBottom: '1rem',
                 letterSpacing: '-0.02em',
               }}>
                 {step.num}
               </p>
-
-              <div style={{ fontSize: '2.2rem', marginBottom: '1rem', lineHeight: 1 }}>{step.icon}</div>
+              <span className="icon-tile" aria-hidden>
+                <step.icon size={24} strokeWidth={1.75} />
+              </span>
+              </div>
 
               <h3 style={{
                 fontFamily: 'var(--font-display)',
@@ -117,17 +107,12 @@ export function HowItWorks() {
               }}>
                 {step.title}
               </h3>
-              <p style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.85rem',
-                color: 'var(--mob-muted)',
-                lineHeight: 1.65,
-              }}>
+              <p className="body-copy">
                 {step.desc}
               </p>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
 
         {/* CTA inline */}
         <div style={{ marginTop: 'clamp(3rem, 5vw, 4rem)', display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
@@ -135,19 +120,11 @@ export function HowItWorks() {
             href="https://wa.me/5535997209115"
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              fontFamily: 'var(--font-display)', fontSize: '1rem',
-              letterSpacing: '0.06em', background: 'var(--mob-fire)',
-              color: '#fff', padding: '0.75rem 2rem',
-              borderRadius: '9999px', display: 'inline-block',
-              transition: 'opacity 0.2s, transform 0.2s',
-            }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0.88'; (e.currentTarget as HTMLElement).style.transform = 'scale(1.03)' }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; (e.currentTarget as HTMLElement).style.transform = 'scale(1)' }}
+            className="btn btn-primary"
           >
             Pedir agora pelo WhatsApp
           </a>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'var(--mob-muted)' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', color: 'var(--mob-muted)' }}>
             Tempo médio de resposta: <strong style={{ color: 'var(--mob-text)' }}>menos de 2 min</strong>
           </p>
         </div>

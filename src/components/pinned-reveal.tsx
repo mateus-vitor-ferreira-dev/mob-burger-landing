@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -28,6 +29,12 @@ export function PinnedReveal() {
   useLayoutEffect(() => {
     if (typeof window === 'undefined') return
 
+    // Sem scroll-jacking para quem prefere menos movimento: frase inteira, já acesa
+    if (prefersReducedMotion()) {
+      wordsRef.current.forEach((el) => { if (el) el.style.opacity = '1' })
+      return
+    }
+
     const ctx = gsap.context(() => {
       const section = sectionRef.current
       if (!section) return
@@ -50,7 +57,9 @@ export function PinnedReveal() {
             trigger: section,
             pin: true,
             start: 'top top',
-            end: `+=${words.length * 220}px`,
+            // Celular: pin mais curto para não "prender" o polegar por tanto tempo
+            end: () => `+=${words.length * (window.innerWidth < 768 ? 140 : 220)}px`,
+            invalidateOnRefresh: true,
             scrub: 0.7,
           },
         }
@@ -71,14 +80,14 @@ export function PinnedReveal() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 'clamp(2rem, 5vw, 5rem)',
+        padding: 'clamp(2rem, 5vw, 5rem) clamp(1.25rem, 5vw, 5rem)',
         borderTop: '1px solid var(--mob-border)',
         overflow: 'hidden',
         position: 'relative',
       }}
     >
       {/* Ambient glow */}
-      <div style={{
+      <div aria-hidden style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255,69,0,0.07) 0%, transparent 70%)',
       }} />
@@ -88,7 +97,7 @@ export function PinnedReveal() {
         ref={labelRef}
         style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '0.7rem',
+          fontSize: '0.75rem',
           letterSpacing: '0.3em',
           color: 'var(--mob-fire)',
           textTransform: 'uppercase',
@@ -99,8 +108,10 @@ export function PinnedReveal() {
         Por que M.O.B?
       </p>
 
-      {/* Words */}
+      {/* Words — leitores de tela recebem a frase inteira de uma vez */}
+      <p className="sr-only">Sem app, sem taxa, sem frescura: só M.O.B.</p>
       <div
+        aria-hidden
         style={{
           fontFamily: 'var(--font-display)',
           fontSize: 'clamp(2.8rem, 8vw, 8.5rem)',
@@ -130,22 +141,21 @@ export function PinnedReveal() {
       </div>
 
       {/* Scroll hint */}
-      <div style={{
+      <div aria-hidden className="hidden md:flex" style={{
         position: 'absolute', bottom: '2rem', left: '50%',
         transform: 'translateX(-50%)',
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem',
-        opacity: 0.25,
+        flexDirection: 'column', alignItems: 'center', gap: '0.4rem',
+        opacity: 0.5,
       }}>
         <p style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.55rem',
+          fontFamily: 'var(--font-body)', fontSize: '0.65rem',
           letterSpacing: '0.22em', color: 'var(--mob-muted)', textTransform: 'uppercase',
         }}>
           Rolar
         </p>
-        <div style={{
+        <div className="scroll-hint-line" style={{
           width: '1px', height: '30px',
           background: 'linear-gradient(to bottom, var(--mob-fire), transparent)',
-          animation: 'pulse 1.8s ease-in-out infinite',
         }} />
       </div>
     </section>
