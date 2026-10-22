@@ -16,7 +16,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "M.O.B — Original's · Lavras/MG",
   description:
-    "Original's — hamburguer artesanal em Lavras/MG. Peça pelo WhatsApp e pague na entrega, sem comissão de terceiros.",
+    "Original's — hamburguer artesanal em Lavras/MG. Peça pelo WhatsApp e pague na entrega com Pix, cartão ou dinheiro, sem comissão de terceiros.",
 }
 
 export const viewport: Viewport = {

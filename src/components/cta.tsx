@@ -117,8 +117,8 @@ export function CTA() {
             margin: '2rem auto 3rem',
           }}
         >
-          Monte o seu pedido pelo WhatsApp, receba na sua porta em 40–60 minutos e pague só na
-          entrega. Sem intermediários, sem comissão.
+          Monte o seu pedido pelo WhatsApp, receba na sua porta em 40–60 minutos e pague na
+          entrega com Pix, cartão ou dinheiro. Sem intermediários, sem comissão.
         </p>
 
         <MagneticButton radius={130} strength={0.42}>

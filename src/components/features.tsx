@@ -23,7 +23,7 @@ const ITEMS = [
   {
     icon: HandCoins,
     title: 'Pague na Entrega',
-    desc: 'Nada de pagar adiantado: você só acerta quando o lanche chega quentinho na sua porta. Sem cadastro e sem app de terceiros.',
+    desc: 'Pix, cartão ou dinheiro, direto com o entregador. Nada de pagar adiantado: você só acerta quando o lanche chega quentinho na sua porta.',
   },
 ]
 
