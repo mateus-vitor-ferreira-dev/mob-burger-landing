@@ -3,6 +3,9 @@
 import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
+import { lockScroll, prefersReducedMotion, unlockScroll } from '@/lib/motion'
+
+const SEEN_KEY = 'mob-intro-seen'
 
 interface IntroProps {
   onComplete: () => void
@@ -17,16 +20,29 @@ export function Intro({ onComplete }: IntroProps) {
   const tagRef     = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
+    const finish = () => {
+      // Marca só ao terminar: no StrictMode o efeito roda duas vezes na montagem
+      try { sessionStorage.setItem(SEEN_KEY, '1') } catch {}
+      if (wrapRef.current) {
+        wrapRef.current.style.pointerEvents = 'none'
+        wrapRef.current.style.visibility    = 'hidden'
+      }
+      onComplete()
+    }
+
+    // Quem prefere menos movimento ou já viu a intro nesta sessão vai direto ao conteúdo
+    let seen = false
+    try { seen = sessionStorage.getItem(SEEN_KEY) === '1' } catch {}
+    if (seen || prefersReducedMotion()) {
+      finish()
+      return
+    }
+    lockScroll()
 
     const tl = gsap.timeline({
       onComplete() {
-        document.body.style.overflow = ''
-        if (wrapRef.current) {
-          wrapRef.current.style.pointerEvents = 'none'
-          wrapRef.current.style.visibility    = 'hidden'
-        }
-        onComplete()
+        unlockScroll()
+        finish()
       },
     })
 
@@ -48,15 +64,24 @@ export function Intro({ onComplete }: IntroProps) {
       }, '-=0.05')
 
       /* ── logo fades before curtain ── */
-      .to(logoRef.current, { opacity: 0, duration: 0.3, ease: 'power1.in' }, '+=1.0')
+      .to(logoRef.current, { opacity: 0, duration: 0.3, ease: 'power1.in' }, '+=0.6')
 
       /* ── curtain splits ── */
-      .to(topRef.current,    { yPercent: -100, duration: 0.85, ease: 'power3.inOut' }, '-=0.15')
+      .addLabel('curtain', '-=0.15')
+      .to(topRef.current,    { yPercent: -100, duration: 0.85, ease: 'power3.inOut' }, 'curtain')
       .to(bottomRef.current, { yPercent:  100, duration: 0.85, ease: 'power3.inOut' }, '<')
+
+    // Clique, toque ou qualquer tecla pulam direto para a cortina
+    const skip = () => { if (tl.time() < tl.labels.curtain) tl.seek('curtain') }
+    window.addEventListener('keydown', skip)
+    window.addEventListener('pointerdown', skip)
 
     return () => {
       tl.kill()
-      document.body.style.overflow = ''
+      window.removeEventListener('keydown', skip)
+      window.removeEventListener('pointerdown', skip)
+      // Se o timeline foi interrompido antes do fim, devolve a trava
+      if (tl.progress() < 1) unlockScroll()
     }
   }, [onComplete])
 
@@ -65,6 +90,7 @@ export function Intro({ onComplete }: IntroProps) {
       ref={wrapRef}
       style={{ visibility: 'hidden' }}
       className="fixed inset-0 z-[9999] overflow-hidden pointer-events-auto"
+      aria-hidden
     >
       {/* Top panel */}
       <div
@@ -86,7 +112,7 @@ export function Intro({ onComplete }: IntroProps) {
       >
         <div ref={mobRef} style={{ filter: 'drop-shadow(0 0 40px rgba(255,90,0,0.5))' }}>
           <Image
-            src="/mob-logo.png"
+            src="/mob-logo.webp"
             alt="M.O.B Burger"
             width={420}
             height={420}
@@ -98,7 +124,7 @@ export function Intro({ onComplete }: IntroProps) {
           ref={tagRef}
           style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 'clamp(0.6rem, 1.2vw, 0.85rem)',
+            fontSize: 'clamp(0.7rem, 1.2vw, 0.85rem)',
             color: 'var(--mob-muted)',
             letterSpacing: '0.3em',
             textTransform: 'uppercase',

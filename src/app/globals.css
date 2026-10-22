@@ -7,8 +7,12 @@
   --mob-card:    #17141F;
   --mob-border:  rgba(255 255 255 / 0.07);
   --mob-text:    #F0EAE0;
-  --mob-muted:   #7A7180;
+  /* #8F8696: 5,7:1 sobre --mob-black e 5,2:1 sobre --mob-card (AA). O antigo #7A7180 ficava em 4,3:1 */
+  --mob-muted:   #8F8696;
   --mob-fire:    #FF4500;
+  /* Fundo de botão com texto branco: o #FF4500 dá só 3,4:1, este dá 4,6:1 */
+  --mob-fire-strong: #D93B00;
+  --header-h:    4.5rem;
   --mob-amber:   #FFB000;
   --mob-glow:    rgba(255 69 0 / 0.22);
   --mob-glow-sm: rgba(255 69 0 / 0.12);
@@ -27,19 +31,144 @@
 }
 
 /* ─── Reset ─────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Em @layer base: fora de camada ele vencia os utilitários do Tailwind
+   (ml-auto, px-*, mb-* etc. simplesmente não funcionavam) */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+}
 
 html {
   background: var(--mob-black);
   color: var(--mob-text);
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  /* clip (e não hidden) não cria um container de scroll — não atrapalha o pin do GSAP */
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
+  background: var(--mob-black);
   font-family: var(--font-body), sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Âncoras não ficam escondidas atrás do header fixo */
+section[id] { scroll-margin-top: var(--header-h); }
+
+/* ─── Foco visível (teclado) ─────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--mob-amber);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10000;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  background: var(--mob-fire-strong);
+  color: #fff;
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform 0.2s;
+}
+.skip-link:focus-visible { transform: none; }
+
+/* ─── Layout ─────────────────────────────────────────────────── */
+.mob-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 6rem);
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: var(--mob-fire);
+  text-transform: uppercase;
+}
+
+.body-copy {
+  font-family: var(--font-body);
+  font-size: clamp(0.95rem, 1.2vw, 1rem);
+  color: var(--mob-muted);
+  line-height: 1.65;
+}
+
+/* ─── Botões ─────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.25s, transform 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+
+.btn-primary { background: var(--mob-fire-strong); color: #fff; }
+.btn-outline { border: 1px solid rgba(255 255 255 / 0.18); color: var(--mob-text); }
+/* Verde escurecido para o texto branco passar no AA (5:1); o #25D366 da marca dá 2:1 */
+.btn-whatsapp { background: #108043; color: #fff; }
+
+@media (hover: hover) {
+  .btn-primary:hover  { background: var(--mob-fire); box-shadow: 0 0 32px rgba(255 69 0 / 0.5); }
+  .btn-outline:hover  { border-color: rgba(255 255 255 / 0.45); color: #fff; }
+  .btn-whatsapp:hover { background: #12894A; box-shadow: 0 0 28px rgba(37 211 102 / 0.45); }
+}
+
+/* Botão flutuante do WhatsApp */
+@media (hover: hover) {
+  .floating-wa:hover { transform: scale(1.1); box-shadow: 0 8px 32px rgba(37 211 102 / 0.7) !important; }
+}
+.floating-wa:active { transform: scale(0.95); }
+/* Some com o menu mobile aberto — ficaria por cima do "Fazer Pedido" do menu */
+html:has(#menu-mobile:not([inert])) .floating-wa-wrap { display: none; }
+
+/* Links de texto (nav, rodapé) */
+.text-link { color: var(--mob-muted); transition: color 0.2s; }
+.text-link:hover, .text-link[aria-current="true"] { color: var(--mob-text); }
+.footer-contact-link { color: var(--mob-text); transition: color 0.2s; }
+.footer-contact-link:hover { color: var(--mob-fire); }
+
+/* Cards com elevação no hover — só onde existe hover de verdade */
+.card {
+  background: var(--mob-card);
+  border: 1px solid var(--mob-border);
+  border-radius: 20px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+@media (hover: hover) {
+  .card-interactive:hover { transform: translateY(-4px); border-color: var(--card-accent, rgba(255 69 0 / 0.4)); }
+}
+.card-interactive:focus-visible { border-color: var(--card-accent, rgba(255 69 0 / 0.4)); }
+
+.icon-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 14px;
+  background: rgba(255 69 0 / 0.1);
+  border: 1px solid rgba(255 69 0 / 0.25);
+  color: var(--mob-fire);
+  flex-shrink: 0;
 }
 
 ::selection {
@@ -72,52 +201,86 @@ body {
 /* ─── Clip overflow for intro ────────────────────────────────── */
 .overflow-clip { overflow: hidden; }
 
-/* ─── Responsive helpers ─────────────────────────────────────── */
-.lg-show { display: none !important; }
-@media (min-width: 1024px) { .lg-show { display: flex !important; justify-content: center; align-items: center; } }
+/* ─── Carrossel do cardápio ──────────────────────────────────────
+   O JS marca a section com .is-pinned quando o GSAP assume (desktop
+   com mouse e sem reduced-motion — ver PINNED_CAROUSEL_MQ). Fora
+   disso o carrossel é um scroll horizontal nativo com snap, o que
+   cobre celular, tablet, notebook com touch e janelas estreitas. */
+.carousel-section { position: relative; background: var(--mob-black); }
+/* clip (e não hidden): o foco por teclado não consegue rolar a section por baixo do GSAP */
+.carousel-section.is-pinned { overflow: clip; }
+.carousel-section.is-pinned .carousel-panel { height: 100vh; }
 
-/* ─── Carrossel desktop — GSAP pin precisa de overflow hidden ── */
-@media (min-width: 1280px) and (hover: hover) {
-  #cardápio { overflow: hidden; }
+/* Larguras do modo pinado (desktop) */
+.burger-card            { min-width: clamp(260px, 25vw, 340px); }
+.carousel-title-card    { min-width: clamp(280px, 28vw, 420px); }
+.carousel-section-label { min-width: clamp(120px, 12vw, 180px); }
+.carousel-end           { min-width: clamp(300px, 32vw, 440px); border-left: 1px solid var(--mob-border); }
+
+.carousel-section:not(.is-pinned) .carousel-viewport {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* Desconta o header fixo: ao chegar pela âncora o card inteiro (nome e preço) cabe na tela */
+  height: min(calc(100svh - var(--header-h)), 52rem);
+}
+.carousel-section:not(.is-pinned) .carousel-viewport::-webkit-scrollbar { display: none; }
+.carousel-section:not(.is-pinned) .carousel-track { height: 100%; }
+.carousel-section:not(.is-pinned) .carousel-panel { height: 100%; scroll-snap-align: start; }
+
+/* Celular: card ocupa ~85vw para mostrar a ponta do próximo */
+.carousel-section:not(.is-pinned) .burger-card         { min-width: min(85vw, 420px); }
+.carousel-section:not(.is-pinned) .carousel-title-card { min-width: min(85vw, 480px); }
+.carousel-section:not(.is-pinned) .carousel-section-label { min-width: 5rem; }
+.carousel-section:not(.is-pinned) .carousel-end { min-width: min(85vw, 420px); }
+
+/* Setas e dicas: cada modo mostra a sua */
+.carousel-section.is-pinned .carousel-arrows,
+.carousel-section.is-pinned .hint-swipe,
+.carousel-section:not(.is-pinned) .hint-scroll { display: none; }
+
+.carousel-arrow {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8 7 11 / 0.75);
+  border: 1px solid rgba(255 255 255 / 0.2);
+  color: var(--mob-text);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.carousel-arrow:disabled { opacity: 0.3; cursor: default; }
+@media (hover: hover) {
+  .carousel-arrow:not(:disabled):hover { background: var(--mob-fire-strong); border-color: var(--mob-fire); }
 }
 
-/* ─── Carrossel mobile/tablet/touch — scroll snap nativo ─────── */
-@media (max-width: 1279px), (hover: none) {
-  #cardápio {
-    overflow-x: auto !important;
-    overflow-y: visible !important;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    height: 100svh;
-  }
-  #cardápio::-webkit-scrollbar { display: none; }
+.burger-card:focus-visible { outline-offset: -3px; border-radius: 0; }
 
-  /* track: sem transform do GSAP */
-  #cardápio > div {
-    will-change: auto !important;
-    transform: none !important;
-    height: 100%;
-  }
-
-  /* phone: card ocupa 85vw, tablet: ~70vw para mostrar peek do próximo */
-  .burger-card {
-    min-width: min(85vw, 560px) !important;
-    height: 100% !important;
-    scroll-snap-align: start;
-  }
-
-  /* title card */
-  .carousel-title-card {
-    min-width: min(80vw, 480px) !important;
-    scroll-snap-align: start;
-  }
-
-  /* section label */
-  .carousel-section-label {
-    min-width: min(40vw, 200px) !important;
-    scroll-snap-align: start;
-  }
+/* ─── Modal do item ───────────────────────────────────────────── */
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  flex: 1;
+}
+.modal-media { min-height: clamp(220px, 34svh, 360px); }
+.modal-cta {
+  position: sticky;
+  bottom: 0;
+  padding-top: 1.25rem;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: linear-gradient(to bottom, transparent, var(--mob-surface) 30%);
+}
+@media (min-width: 768px) {
+  .modal-grid { grid-template-columns: minmax(0, 45%) minmax(0, 55%); overflow: hidden; }
+  .modal-media { min-height: clamp(320px, 50vh, 560px); }
+  .modal-body { overflow-y: auto; }
 }
 
 /* ─── M.O.B hero glow animations ─────────────────────────────── */
@@ -131,3 +294,34 @@ body {
 }
 .mob-fire  { animation: mob-fire 2.8s ease-in-out infinite; }
 .mob-float { animation: mob-letter-float 3.5s ease-in-out infinite; }
+
+/* Nome da marca no hero: no celular (coluna única, sem o M·O·B fantasma)
+   as linhas ocupam a largura toda; a partir de 640px dividem espaço */
+.hero-line-xl { font-size: clamp(4.5rem, 28vw, 18rem); }
+.hero-line-md { font-size: clamp(3.25rem, 22vw, 14rem); }
+@media (min-width: 640px) {
+  .hero-line-xl { font-size: clamp(5.5rem, 19vw, 18rem); }
+  .hero-line-md { font-size: clamp(3.5rem, 14.5vw, 14rem); }
+}
+
+/* Indicador "role a página" */
+@keyframes scroll-hint {
+  0%, 100% { opacity: 0.35; transform: scaleY(0.6); transform-origin: top; }
+  50%      { opacity: 1;    transform: scaleY(1);   transform-origin: top; }
+}
+.scroll-hint-line { animation: scroll-hint 1.8s ease-in-out infinite; }
+
+/* ─── Cursor customizado: só aparece quando o JS liga ───────── */
+.custom-cursor { display: none; }
+.has-custom-cursor .custom-cursor { display: block; }
+.has-custom-cursor, .has-custom-cursor * { cursor: none !important; }
+
+/* ─── Reduced motion ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .marquee-track, .mob-fire, .mob-float, .scroll-hint-line { animation: none; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
