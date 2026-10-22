@@ -4,7 +4,7 @@ export function MarqueeStrip() {
     'LAVRAS · MG',
     'FEITO NA HORA',
     'INGREDIENTES FRESCOS',
-    'PIX · CARTÃO',
+    'PAGUE NA ENTREGA',
     'SEM COMISSÃO',
     'PEÇA AGORA',
   ]

@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -23,7 +24,7 @@ export function ScrambleText({ text, style, className, duration = 0.7, delay = 0
 
   useLayoutEffect(() => {
     const el = spanRef.current
-    if (!el) return
+    if (!el || prefersReducedMotion()) return
 
     const original = text
     const fps = 60
@@ -54,6 +55,7 @@ export function ScrambleText({ text, style, className, duration = 0.7, delay = 0
       rafRef.current = requestAnimationFrame(tick)
     }
 
+    let timeoutId: number | undefined
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: el,
@@ -61,7 +63,7 @@ export function ScrambleText({ text, style, className, duration = 0.7, delay = 0
         once,
         onEnter: () => {
           if (delay > 0) {
-            setTimeout(runScramble, delay * 1000)
+            timeoutId = window.setTimeout(runScramble, delay * 1000)
           } else {
             runScramble()
           }
@@ -71,13 +73,16 @@ export function ScrambleText({ text, style, className, duration = 0.7, delay = 0
 
     return () => {
       ctx.revert()
+      window.clearTimeout(timeoutId)
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
     }
   }, [text, duration, delay, once])
 
   return (
-    <span ref={spanRef} style={style} className={className}>
-      {text}
+    <span style={style} className={className}>
+      {/* O embaralhado é só visual; leitores de tela recebem o texto real */}
+      <span ref={spanRef} aria-hidden>{text}</span>
+      <span className="sr-only">{text}</span>
     </span>
   )
 }

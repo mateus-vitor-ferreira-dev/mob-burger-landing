@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
+import { hasFinePointer, prefersReducedMotion } from '@/lib/motion'
 
 interface MagneticButtonProps {
   children: React.ReactNode
@@ -15,8 +16,8 @@ export function MagneticButton({ children, radius = 110, strength = 0.38, classN
   const innerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Sem efeito em dispositivos touch
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return
+    // Só com mouse de verdade (notebook com touch também tem mouse) e sem reduced-motion
+    if (!hasFinePointer() || prefersReducedMotion()) return
 
     const wrap  = wrapRef.current
     const inner = innerRef.current

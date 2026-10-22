@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
+import { X } from 'lucide-react'
+import { lockScroll, prefersReducedMotion, unlockScroll } from '@/lib/motion'
 
 export interface BurgerDetail {
   name: string
@@ -26,14 +28,21 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
   const titleRef       = useRef<HTMLHeadingElement>(null)
   const labelRef       = useRef<HTMLParagraphElement>(null)
   const ctaRef         = useRef<HTMLAnchorElement>(null)
+  const closeRef       = useRef<HTMLButtonElement>(null)
+  const closingRef     = useRef(false)
+  const onCloseRef     = useRef(onClose)
+  onCloseRef.current   = onClose
 
   /* ── Open animation ── */
   useEffect(() => {
     if (!burger) return
 
+    closingRef.current = false
     const items = ingredientsRef.current?.querySelectorAll('li') ?? []
 
     const tl = gsap.timeline()
+    // Sem movimento: tudo aparece de uma vez
+    if (prefersReducedMotion()) tl.timeScale(1000)
 
     // 1. backdrop fades in
     tl.fromTo(backdropRef.current,
@@ -77,21 +86,46 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
     )
   }, [burger])
 
-  /* ── Keyboard close ── */
+  /* ── Foco, teclado e scroll da página enquanto aberto ── */
+  const isOpen = burger !== null
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose() }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  })
+    if (!isOpen) return
+    const opener = document.activeElement as HTMLElement | null
+    lockScroll()
+    closeRef.current?.focus({ preventScroll: true })
 
-  /* ── Prevent body scroll ── */
-  useEffect(() => {
-    if (burger) document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [burger])
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose()
+        return
+      }
+      // Mantém o Tab dentro do diálogo
+      if (e.key !== 'Tab' || !panelRef.current) return
+      const focusables = panelRef.current.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')
+      const first = focusables[0]
+      const last  = focusables[focusables.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      unlockScroll()
+      opener?.focus({ preventScroll: true })
+    }
+  }, [isOpen])
 
   function handleClose() {
-    const tl = gsap.timeline({ onComplete: onClose })
+    if (closingRef.current) return
+    closingRef.current = true
+    const tl = gsap.timeline({ onComplete: () => onCloseRef.current() })
+    if (prefersReducedMotion()) tl.timeScale(1000)
     tl.to(panelRef.current,    { y: '100%', duration: 0.38, ease: 'power3.in' })
     tl.to(backdropRef.current, { opacity: 0, duration: 0.22, ease: 'power2.in' }, '<0.05')
   }
@@ -106,6 +140,7 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
       {/* Backdrop */}
       <div
         ref={backdropRef}
+        aria-hidden
         onClick={handleClose}
         style={{
           position: 'absolute', inset: 0,
@@ -119,9 +154,14 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
       {/* Panel */}
       <div
         ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="burger-modal-title"
         style={{
           position: 'absolute',
           bottom: 0, left: 0, right: 0,
+          maxWidth: '1200px',
+          marginInline: 'auto',
           background: 'var(--mob-surface)',
           borderTop: `3px solid ${burger.accent}`,
           borderRadius: '24px 24px 0 0',
@@ -135,50 +175,24 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
       >
         {/* Close button */}
         <button
+          ref={closeRef}
+          type="button"
           onClick={handleClose}
-          aria-label="Fechar"
-          style={{
-            position: 'absolute', top: '1rem', right: '1.25rem',
-            width: '36px', height: '36px', borderRadius: '50%',
-            background: 'rgba(0,0,0,0.5)',
-            border: '1px solid rgba(255,255,255,0.12)',
-            color: 'rgba(255,255,255,0.6)',
-            fontSize: '1rem', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            zIndex: 10, transition: 'all 0.2s',
-          }}
-          onMouseEnter={(e) => {
-            const el = e.currentTarget as HTMLElement
-            el.style.color = '#fff'
-            el.style.background = 'rgba(255,255,255,0.1)'
-          }}
-          onMouseLeave={(e) => {
-            const el = e.currentTarget as HTMLElement
-            el.style.color = 'rgba(255,255,255,0.6)'
-            el.style.background = 'rgba(0,0,0,0.5)'
-          }}
+          aria-label="Fechar detalhes"
+          className="carousel-arrow"
+          style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', zIndex: 10 }}
         >
-          ✕
+          <X aria-hidden size={22} />
         </button>
 
-        {/* Two-column layout */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 45%) minmax(0, 55%)',
-          flex: 1,
-          overflow: 'hidden',
-          // Stack on small screens
-          ...(typeof window !== 'undefined' && window.innerWidth < 640
-            ? { gridTemplateColumns: '1fr', overflowY: 'auto' }
-            : {}),
-        }}>
+        {/* Foto + detalhes: empilhados no celular, lado a lado a partir de 768px (ver .modal-grid) */}
+        <div className="modal-grid">
 
           {/* LEFT — photo, full burger visible */}
-          <div style={{
+          <div className="modal-media" style={{
             position: 'relative',
             background: `linear-gradient(135deg, ${burger.bg[0]} 0%, ${burger.bg[1]} 100%)`,
             overflow: 'hidden',
-            minHeight: 'clamp(260px, 40vh, 560px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -201,31 +215,28 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
                   src={burger.image}
                   alt={burger.name}
                   fill
-                  sizes="45vw"
+                  sizes="(max-width: 768px) 90vw, 540px"
                   style={{
                     objectFit: 'contain',       // ← mostra a foto inteira, sem corte
                     objectPosition: 'center',
                     filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.7))',
                   }}
-                  unoptimized
                 />
               </div>
             ) : (
-              <span style={{
-                fontSize: 'clamp(5rem, 10vw, 10rem)',
-                filter: `drop-shadow(0 0 40px ${burger.accent}90)`,
-              }}>
-                {burger.name.includes('Frango') ? '🍗' : '🍔'}
+              <span aria-hidden style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(4rem, 10vw, 8rem)', color: burger.accent }}>
+                M.O.B
               </span>
             )}
 
             {/* Tag */}
             <div style={{ position: 'absolute', top: '1.25rem', left: '1.25rem', zIndex: 2 }}>
               <span style={{
-                fontFamily: 'var(--font-body)', fontSize: '0.6rem',
-                letterSpacing: '0.18em', textTransform: 'uppercase',
-                background: burger.accent, color: '#fff',
-                padding: '0.25rem 0.75rem', borderRadius: '9999px',
+                fontFamily: 'var(--font-body)', fontSize: '0.7rem', fontWeight: 600,
+                letterSpacing: '0.14em', textTransform: 'uppercase',
+                background: 'rgba(8,7,11,0.75)', color: '#fff',
+                border: `1px solid ${burger.accent}`,
+                padding: '0.3rem 0.8rem', borderRadius: '9999px',
               }}>
                 {burger.tag}
               </span>
@@ -233,15 +244,16 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
           </div>
 
           {/* RIGHT — ingredients */}
-          <div style={{
+          <div className="modal-body" style={{
             display: 'flex',
             flexDirection: 'column',
-            overflowY: 'auto',
-            padding: 'clamp(1.5rem, 3vw, 2.5rem)',
+            padding: 'clamp(1.25rem, 3vw, 2.5rem)',
+            paddingBottom: 0,
           }}>
             {/* Name */}
             <h2
               ref={titleRef}
+              id="burger-modal-title"
               style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: 'clamp(2rem, 4vw, 3.2rem)',
@@ -280,7 +292,7 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
             <p
               ref={labelRef}
               style={{
-                fontFamily: 'var(--font-body)', fontSize: '0.62rem',
+                fontFamily: 'var(--font-body)', fontSize: '0.72rem',
                 letterSpacing: '0.22em', color: burger.accent,
                 textTransform: 'uppercase', marginBottom: '1rem',
                 opacity: 0,
@@ -304,12 +316,12 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
                     padding: '0.7rem 0',
                     borderBottom: '1px solid var(--mob-border)',
                     fontFamily: 'var(--font-body)',
-                    fontSize: 'clamp(0.85rem, 1.4vw, 1rem)',
+                    fontSize: '1rem',
                     color: 'var(--mob-text)',
                     opacity: 0,  // GSAP starts from 0
                   }}
                 >
-                  <span style={{
+                  <span aria-hidden style={{
                     width: '7px', height: '7px', borderRadius: '50%',
                     background: burger.accent, flexShrink: 0,
                     boxShadow: `0 0 6px ${burger.accent}80`,
@@ -320,40 +332,23 @@ export function BurgerModal({ burger, onClose }: BurgerModalProps) {
             </ul>
 
             {/* CTA */}
-            <div style={{ paddingTop: '1.75rem' }}>
+            {/* Fica grudado no rodapé enquanto a lista rola (celular) */}
+            <div className="modal-cta" style={{ paddingBottom: 'max(1.25rem, env(safe-area-inset-bottom))' }}>
               <a
                 ref={ctaRef}
                 href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="btn btn-whatsapp w-full"
                 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(0.95rem, 1.8vw, 1.2rem)',
-                  letterSpacing: '0.06em',
-                  background: burger.accent,
-                  color: '#fff',
-                  padding: '0.9rem 1.5rem',
                   borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.5rem',
-                  width: '100%',
+                  minHeight: '52px',
+                  whiteSpace: 'normal',
+                  textAlign: 'center',
                   opacity: 0,
-                  transition: 'opacity 0.2s, transform 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.opacity = '0.88'
-                  el.style.transform = 'scale(1.02)'
-                }}
-                onMouseLeave={(e) => {
-                  const el = e.currentTarget as HTMLElement
-                  el.style.opacity = '1'
-                  el.style.transform = 'scale(1)'
                 }}
               >
-                Pedir {burger.name} no WhatsApp →
+                Pedir {burger.name} no WhatsApp
               </a>
             </div>
           </div>

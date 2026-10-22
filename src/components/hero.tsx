@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { MagneticButton } from './magnetic-button'
+import { prefersReducedMotion } from '@/lib/motion'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -22,7 +23,8 @@ export function Hero({ ready }: HeroProps) {
   const scrollRef   = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!ready) return
+    // Sem movimento: o conteúdo já está no estado final (números incluídos)
+    if (!ready || prefersReducedMotion()) return
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.1 })
@@ -62,7 +64,7 @@ export function Hero({ ready }: HeroProps) {
 
 
       // Contador animado nos stats
-      document.querySelectorAll('[data-to]').forEach((el) => {
+      sectionRef.current?.querySelectorAll('[data-to]').forEach((el) => {
         const from    = Number(el.getAttribute('data-from') ?? 0)
         const to      = Number(el.getAttribute('data-to')   ?? 0)
         const suffix  = el.getAttribute('data-suffix') ?? ''
@@ -100,7 +102,7 @@ export function Hero({ ready }: HeroProps) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: 'clamp(6rem, 10vh, 9rem) clamp(2rem, 6vw, 6rem) clamp(4rem, 8vh, 7rem)',
+        padding: 'calc(var(--header-h) + clamp(1.5rem, 5vh, 4rem)) 0 clamp(3rem, 8vh, 7rem)',
       }}
     >
       {/* Ambient fire glow — large, behind everything */}
@@ -120,12 +122,13 @@ export function Hero({ ready }: HeroProps) {
         }}
       />
 
+      <div className="mob-container" style={{ position: 'relative', zIndex: 2 }}>
       {/* Eyebrow */}
       <p
         ref={eyebrowRef}
         style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '0.7rem',
+          fontSize: '0.75rem',
           letterSpacing: '0.28em',
           color: 'var(--mob-fire)',
           textTransform: 'uppercase',
@@ -137,15 +140,14 @@ export function Hero({ ready }: HeroProps) {
           zIndex: 2,
         }}
       >
-        <span style={{ width: '28px', height: '1px', background: 'var(--mob-fire)', display: 'inline-block' }} />
+        <span aria-hidden style={{ width: '28px', height: '1px', background: 'var(--mob-fire)', display: 'inline-block' }} />
         Artesanal · Lavras/MG
       </p>
 
       {/* ── BRAND NAME + M.O.B ghost ── */}
       <div
+        className="grid grid-cols-1 sm:grid-cols-[auto_1fr]"
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'auto 1fr',
           alignItems: 'center',
           gap: 'clamp(1rem, 3vw, 3rem)',
           position: 'relative',
@@ -162,52 +164,56 @@ export function Hero({ ready }: HeroProps) {
           }}
         >
           {/* MURILO */}
-          <div className="overflow-clip">
-            <div
+          <span className="block overflow-clip">
+            <span
               ref={line1Ref}
+              className="hero-line-xl"
               style={{
-                fontSize: 'clamp(5.5rem, 19vw, 18rem)',
+                display: 'block',
                 background: 'linear-gradient(to bottom, #FFFDE7 0%, #FFE082 25%, #FFCA28 55%, #FFB300 100%)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}
             >
               MURILO
-            </div>
-          </div>
+            </span>
+          </span>
 
           {/* ORIGINAL */}
-          <div className="overflow-clip">
-            <div
+          <span className="block overflow-clip">
+            <span
               ref={line2Ref}
+              className="hero-line-md"
               style={{
-                fontSize: 'clamp(3.5rem, 14.5vw, 14rem)',
+                display: 'block',
                 background: 'linear-gradient(to bottom, #FFB300 0%, #FF8F00 30%, #FF6D00 65%, #F4511E 100%)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}
             >
               ORIGINAL&rsquo;S
-            </div>
-          </div>
+            </span>
+          </span>
 
           {/* BURGER */}
-          <div className="overflow-clip">
-            <div
+          <span className="block overflow-clip">
+            <span
               ref={line3Ref}
+              className="hero-line-xl"
               style={{
-                fontSize: 'clamp(5.5rem, 19vw, 18rem)',
+                display: 'block',
                 background: 'linear-gradient(to bottom, #E64A19 0%, #C62828 45%, #B71C1C 75%, #7B1414 100%)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
               }}
             >
               BURGER
-            </div>
-          </div>
+            </span>
+          </span>
         </h1>
 
-        {/* Right — M · O · B ghost editorial */}
+        {/* Right — M · O · B ghost editorial (decorativo; some no celular) */}
         <div
+          aria-hidden
+          className="hidden sm:flex"
           style={{
-            display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
@@ -238,7 +244,7 @@ export function Hero({ ready }: HeroProps) {
           {/* Label abaixo */}
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '0.58rem',
+            fontSize: '0.65rem',
             letterSpacing: '0.22em',
             color: 'rgba(255,150,0,0.3)',
             marginTop: '0.5rem',
@@ -253,8 +259,6 @@ export function Hero({ ready }: HeroProps) {
       <div
         ref={bottomRef}
         style={{
-          position: 'relative',
-          zIndex: 2,
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'flex-end',
@@ -264,81 +268,47 @@ export function Hero({ ready }: HeroProps) {
       >
         {/* Left: tagline + CTAs */}
         <div style={{ maxWidth: '420px' }}>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 'clamp(0.85rem, 1.4vw, 1.05rem)',
-            color: 'var(--mob-muted)',
-            lineHeight: 1.65,
-            marginBottom: '1.75rem',
-          }}>
+          <p className="body-copy" style={{ fontSize: 'clamp(1rem, 1.4vw, 1.1rem)', marginBottom: '1.75rem' }}>
             Ingredientes premium, pão brioche fresquinho e aquele blend que você não encontra em
             nenhuma rede. Peça agora direto, sem comissão.
           </p>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+          <div className="grid grid-cols-1 min-[400px]:flex min-[400px]:flex-wrap" style={{ gap: '0.75rem' }}>
             <MagneticButton>
-              <a
-                href="#pedido"
-                style={{
-                  fontFamily: 'var(--font-display)', fontSize: '1.05rem',
-                  letterSpacing: '0.06em', background: 'var(--mob-fire)',
-                  color: '#fff', padding: '0.75rem 2rem', borderRadius: '9999px',
-                  transition: 'box-shadow 0.2s',
-                  display: 'block',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.boxShadow = '0 0 32px rgba(255,69,0,0.55)'
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.boxShadow = 'none'
-                }}
-              >
+              <a href="#pedido" className="btn btn-primary w-full">
                 Fazer Pedido
               </a>
             </MagneticButton>
-            <a
-              href="/cardapio.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontFamily: 'var(--font-display)', fontSize: '1.05rem',
-                letterSpacing: '0.06em', color: 'var(--mob-text)',
-                padding: '0.75rem 2rem', borderRadius: '9999px',
-                border: '1px solid var(--mob-border)',
-                transition: 'border-color 0.2s, color 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.borderColor = 'rgba(255,255,255,0.25)'
-                el.style.color = '#fff'
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement
-                el.style.borderColor = 'var(--mob-border)'
-                el.style.color = 'var(--mob-text)'
-              }}
-            >
+            <a href="/cardapio.html" target="_blank" rel="noopener noreferrer" className="btn btn-outline">
               Ver Cardápio
+              <span className="sr-only"> (abre em nova aba)</span>
             </a>
           </div>
         </div>
 
         {/* Right: stats com contador animado */}
-        <div style={{ display: 'flex', gap: 'clamp(1.5rem, 3vw, 3rem)', alignItems: 'flex-end' }}>
+        <dl style={{ display: 'flex', gap: 'clamp(1.5rem, 3vw, 3rem)', alignItems: 'flex-end' }}>
           {[
             { id: 'stat-opcoes',    from: 0,   to: 22,  suffix: '+',   label: 'opções' },
             { id: 'stat-artesanal', from: 0,   to: 100, suffix: '%',   label: 'artesanal' },
             { id: 'stat-entrega',   from: 40,  to: 60,  suffix: 'min', label: 'entrega', range: true },
           ].map(({ id, from, to, suffix, label, range }, i) => (
-            <div key={label} style={{ textAlign: 'center', position: 'relative' }}>
+            <div key={label} style={{ textAlign: 'center', position: 'relative', display: 'flex', flexDirection: 'column-reverse' }}>
               {i > 0 && (
-                <span style={{
+                <span aria-hidden style={{
                   position: 'absolute', left: '-1.5rem', top: '50%',
                   width: '1px', height: '24px',
                   background: 'var(--mob-border)', transform: 'translateY(-50%)',
                 }} />
               )}
-              <p
+              <dt style={{
+                fontFamily: 'var(--font-body)', fontSize: '0.7rem',
+                color: 'var(--mob-muted)', letterSpacing: '0.12em',
+                textTransform: 'uppercase', marginTop: '0.2rem',
+              }}>
+                {label}
+              </dt>
+              <dd
                 id={id}
                 data-from={from} data-to={to} data-suffix={suffix} data-range={range ? 'true' : ''}
                 style={{
@@ -348,40 +318,35 @@ export function Hero({ ready }: HeroProps) {
                 }}
               >
                 {range ? `${from}–${to}${suffix}` : `${to}${suffix}`}
-              </p>
-              <p style={{
-                fontFamily: 'var(--font-body)', fontSize: '0.62rem',
-                color: 'var(--mob-muted)', letterSpacing: '0.12em',
-                textTransform: 'uppercase', marginTop: '0.2rem',
-              }}>
-                {label}
-              </p>
+              </dd>
             </div>
           ))}
-        </div>
+        </dl>
+      </div>
       </div>
 
       {/* Scroll indicator */}
       <div
         ref={scrollRef}
+        aria-hidden
+        className="hidden md:flex [@media(max-height:700px)]:hidden"
         style={{
           position: 'absolute', bottom: '2rem', left: '50%',
           transform: 'translateX(-50%)',
-          display: 'flex', flexDirection: 'column',
+          flexDirection: 'column',
           alignItems: 'center', gap: '0.4rem',
         }}
       >
         <p style={{
-          fontFamily: 'var(--font-body)', fontSize: '0.6rem',
+          fontFamily: 'var(--font-body)', fontSize: '0.65rem',
           letterSpacing: '0.22em', color: 'var(--mob-muted)',
           textTransform: 'uppercase',
         }}>
-          Scroll
+          Role
         </p>
-        <div style={{
+        <div className="scroll-hint-line" style={{
           width: '1px', height: '36px',
           background: 'linear-gradient(to bottom, var(--mob-fire), transparent)',
-          animation: 'pulse 1.8s ease-in-out infinite',
         }} />
       </div>
     </section>
